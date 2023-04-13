@@ -33,8 +33,7 @@ namespace Sudoku {
             PopulateBoard();
         }
 
-        public void PopulateBoard() => Cells = Cells.Select(PopulateCell)
-                                                    .ToList();
+        public void PopulateBoard() => Cells.ForEach(cell => PopulateCell(cell));
 
         Cell PopulateCell(Cell cell) {
             var numbers = new int[BOARD_SIZE];
@@ -43,12 +42,14 @@ namespace Sudoku {
             }
 
             Shuffle(numbers);
-
+            var validCellFound = false;
             foreach (var num in numbers) {
                 cell.Value = num;
-                if (IsCellValid(cell)) {
-                    break;
-                }
+                if (!IsCellValid(cell)) continue;
+                validCellFound = true;
+                break;
+            }
+            if (!validCellFound) {
                 cell.Value = 0;
             }
             return cell;
@@ -56,6 +57,7 @@ namespace Sudoku {
 
         static void Shuffle<T>(T[] array) {
             var rand = new Random();
+            rand.InitState();
             for (var i = array.Length - 1; i > 0; i--) {
                 var j = rand.NextInt(i + 1);
                 (array[i], array[j]) = (array[j], array[i]);
@@ -67,7 +69,11 @@ namespace Sudoku {
             var col = cell.Position.Column;
             var num = cell.Value;
             for (var i = 0; i < BOARD_SIZE; i++) {
-                if (GetCell(row, i).Value == num || GetCell(i, col).Value == num) {
+                if (i != col && GetCell(row, i).Value == num) {
+                    return false;
+                }
+
+                if (i != row && GetCell(i, col).Value == num) {
                     return false;
                 }
             }
@@ -76,7 +82,7 @@ namespace Sudoku {
             var subCol = col / SUB_BOARD_SIZE * SUB_BOARD_SIZE;
             for (var i = subRow; i < subRow + SUB_BOARD_SIZE; i++) {
                 for (var j = subCol; j < subCol + SUB_BOARD_SIZE; j++) {
-                    if (GetCell(i, j).Value == num) {
+                    if (i != row && j != col && GetCell(i, j).Value == num) {
                         return false;
                     }
                 }
@@ -85,19 +91,40 @@ namespace Sudoku {
             return true;
         }
 
-        public Cell GetCell(int row, int column)            => Cells[row * BOARD_SIZE + column];
+        public Cell GetCell(int row, int column) => Cells[row * BOARD_SIZE + column];
+
+        public List<Cell> GetBlockCells(int block) {
+            if (block is < 0 or > BOARD_SIZE - 1) {
+                throw new ArgumentOutOfRangeException(nameof(block), block, "Block must be between 0 and 8");
+            }
+
+            var cells = new List<Cell>();
+            var row   = block / SUB_BOARD_SIZE * SUB_BOARD_SIZE;
+            var col   = block % SUB_BOARD_SIZE * SUB_BOARD_SIZE;
+            for (var i = row; i < row + SUB_BOARD_SIZE; i++) {
+                for (var j = col; j < col + SUB_BOARD_SIZE; j++) {
+                    cells.Add(GetCell(i, j));
+                }
+            }
+
+            return cells;
+        }
+
         public void SetCell(int row, int column, int value) => Cells[row * BOARD_SIZE + column].Value = value;
     }
 
     public class Cell {
         public int           Value         { get; set; }
         public BoardPosition Position      { get; set; }
+        public int           Block         { get; set; }
         public bool          IsEditable    { get; private set; }
         public bool          IsSelected    { get; set; }
         public bool          IsError       { get; set; }
         public bool          IsHighlighted { get; set; }
         public bool          IsHint        { get; set; }
         public bool          IsSolved      { get; set; }
+
+        public int Index => Position.Row * SudokuBoard.BOARD_SIZE + Position.Column;
 
         public Cell(int value, BoardPosition position, bool isEditable) {
             Value = value;

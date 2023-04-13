@@ -107,3 +107,14 @@
     margin-top: 11px;
     margin-bottom: 11px;
 }
+
+.sudoku_cell {
+    width: 33.33333%;
+    height: 33.33333%;
+    -unity-font: url('project://database/Packages/com.unity.mobile.android-logcat/Editor/Fonts/consola.ttf?fileID=12800000&guid=b8af58820f69b474e8f63dc40a702fbc&type=3#consola');
+    -unity-font-style: bold-and-italic;
+    font-size: 481%;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+    flex-shrink: 0;
+}
