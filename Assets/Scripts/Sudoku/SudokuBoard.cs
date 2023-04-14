@@ -48,28 +48,28 @@ namespace Sudoku {
             }
 
             numbers = numbers.Where(number => IsCellValid(cellIndex, number)).ToArray();
-            var c = Cells[cellIndex];
-            c.value = 0;
-            Cells[cellIndex] = c;
+            SetCellValue(cellIndex, 0);
             Shuffle(numbers);
             var nextCell = solve ? GetNextEmptyCellIndex(cellIndex) : GetNextCellIndex(cellIndex);
             if (nextCell < -1) {
-                c = Cells[cellIndex];
-                c.value = numbers.FirstOrDefault();
-                Cells[cellIndex] = c;
+                SetCellValue(cellIndex, numbers.FirstOrDefault());
                 return true;
             }
 
             foreach (var num in numbers) {
-                c = Cells[cellIndex];
-                c.value = num;
-                Cells[cellIndex] = c;
+                SetCellValue(cellIndex, num);
                 if (PopulateCell(nextCell, solve)) {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        void SetCellValue(int cellIndex, int value) {
+            var c = Cells[cellIndex];
+            c.value = value;
+            Cells[cellIndex] = c;
         }
 
         void SetCellValues(IReadOnlyList<int> values) {
@@ -158,6 +158,9 @@ namespace Sudoku {
             var nextCell      = Cells[nextCellIndex];
             while (nextCell.value != 0) {
                 nextCellIndex = GetNextCellIndex(nextCellIndex);
+                if (nextCellIndex < 0) {
+                    return -1;
+                }
                 nextCell = Cells[nextCellIndex];
             }
 
