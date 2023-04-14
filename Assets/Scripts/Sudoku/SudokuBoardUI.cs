@@ -30,6 +30,8 @@ namespace Sudoku
                 return;
             }
 
+            _blocks.Clear();
+
             _boardContainer = boardUI.rootVisualElement.Q<VisualElement>("BoardBase");
 
             foreach (var i in Enumerable.Range(0, SudokuBoard.BOARD_SIZE)) {
@@ -39,6 +41,7 @@ namespace Sudoku
             }
 
             _cells = _blocks.SelectMany(block => block.Cells).ToList();
+            _cells.Sort((cell1, cell2) => cell1.CellIndex > cell2.CellIndex ? 1 : -1);
             UpdateBoard(board);
         }
 

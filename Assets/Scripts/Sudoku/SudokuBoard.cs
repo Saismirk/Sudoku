@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Unity.Mathematics;
 using Random = Unity.Mathematics.Random;
@@ -33,38 +34,133 @@ namespace Sudoku {
             PopulateBoard();
         }
 
-        public void PopulateBoard() => Cells.ForEach(cell => PopulateCell(cell));
+        public void PopulateBoard(bool solve = false) {
+            if (!PopulateCell(Cells[0], solve)) {
+                Debug.LogError("Failed to generate board");
+            }
+        }
 
-        Cell PopulateCell(Cell cell) {
+        bool PopulateCell(Cell cell, bool solve) {
             var numbers = new int[BOARD_SIZE];
             for (var i = 0; i < BOARD_SIZE; i++) {
                 numbers[i] = i + 1;
             }
 
+            numbers = numbers.Where(number => IsCellValid(cell, number)).ToArray();
+            cell.Value = 0;
             Shuffle(numbers);
-            var validCellFound = false;
+            var nextCell = solve ? GetNextEmptyCell(cell) : GetNextCell(cell);
+            if (nextCell == null) {
+                cell.Value = numbers.FirstOrDefault();
+                return true;
+            }
+
             foreach (var num in numbers) {
                 cell.Value = num;
-                if (!IsCellValid(cell)) continue;
-                validCellFound = true;
-                break;
+                if (PopulateCell(nextCell, solve)) {
+                    return true;
+                }
             }
-            if (!validCellFound) {
-                cell.Value = 0;
+
+            return false;
+        }
+
+        void SetCellValues(IReadOnlyList<int> values) {
+            for (var i = 0; i < values.Count; i++) {
+                Cells[i].Value = values[i];
             }
-            return cell;
+        }
+
+        int FindSolutions(Cell cell, ref int solutions, IReadOnlyList<int> values) {
+            if (cell == null) {
+                return solutions;
+            }
+
+            var numbers = new int[BOARD_SIZE];
+            for (var i = 0; i < BOARD_SIZE; i++) {
+                numbers[i] = i + 1;
+            }
+
+            numbers = numbers.Where(number => IsCellValid(cell, number)).ToArray();
+            cell.Value = 0;
+            Shuffle(numbers);
+            var nextCell = GetNextEmptyCell(cell);
+            if (nextCell == null) {
+                SetCellValues(values);
+                solutions++;
+                return solutions;
+            }
+
+            foreach (var num in numbers) {
+                cell.Value = num;
+                if (FindSolutions(nextCell, ref solutions, values) > 2) {
+                    return solutions;
+                }
+            }
+
+            return solutions;
+        }
+
+        public bool HasUniqueSolution() {
+            var solutions = 0;
+            var firstCell = GetNextEmptyCell(Cells[0]);
+            if (firstCell == null) {
+                Debug.Log("Board is already solved");
+                return true;
+            }
+            var valueList = Cells.Select(cell => cell.Value).ToList();
+            FindSolutions(firstCell, ref solutions, valueList);
+            Debug.Log($"Found {solutions} solutions");
+            Debug.Log($"{this}");
+            SetCellValues(valueList);
+            return solutions == 1;
         }
 
         static void Shuffle<T>(T[] array) {
             var rand = new Random();
-            rand.InitState();
+            rand.InitState((uint)Time.frameCount);
             for (var i = array.Length - 1; i > 0; i--) {
                 var j = rand.NextInt(i + 1);
                 (array[i], array[j]) = (array[j], array[i]);
             }
         }
 
+        Cell GetNextCell(Cell cell) {
+            if (cell == null) {
+                return null;
+            }
+
+            var nextIndex = cell.Index + 1;
+            return nextIndex >= BOARD_SIZE * BOARD_SIZE ? null : Cells[nextIndex];
+        }
+
+        Cell GetNextEmptyCell(Cell cell) {
+            if (cell == null) {
+                return null;
+            }
+
+            var nextCell = GetNextCell(cell);
+            while (nextCell != null && nextCell.Value != 0) {
+                nextCell = GetNextCell(nextCell);
+            }
+
+            return nextCell;
+        }
+
+        bool IsCellValid(Cell cell, int value) {
+            if (cell == null) {
+                return false;
+            }
+
+            cell.Value = value;
+            return IsCellValid(cell);
+        }
+
         bool IsCellValid(Cell cell) {
+            if (cell.Value == 0) {
+                return false;
+            }
+
             var row = cell.Position.Row;
             var col = cell.Position.Column;
             var num = cell.Value;
@@ -82,7 +178,7 @@ namespace Sudoku {
             var subCol = col / SUB_BOARD_SIZE * SUB_BOARD_SIZE;
             for (var i = subRow; i < subRow + SUB_BOARD_SIZE; i++) {
                 for (var j = subCol; j < subCol + SUB_BOARD_SIZE; j++) {
-                    if (i != row && j != col && GetCell(i, j).Value == num) {
+                    if ((i != row || j != col) && GetCell(i, j).Value == num) {
                         return false;
                     }
                 }
@@ -111,6 +207,20 @@ namespace Sudoku {
         }
 
         public void SetCell(int row, int column, int value) => Cells[row * BOARD_SIZE + column].Value = value;
+
+        public override string ToString() {
+            StringBuilder sb = new();
+            for (var row = 0; row < BOARD_SIZE; row++) {
+                for (var column = 0; column < BOARD_SIZE; column++) {
+                    sb.Append(GetCell(row, column).Value);
+                    sb.Append(" ");
+                }
+
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
     }
 
     public class Cell {
