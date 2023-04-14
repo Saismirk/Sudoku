@@ -14,13 +14,19 @@ namespace Sudoku {
         }
 
         public static void GenerateBoard() {
+            var processTime = Time.realtimeSinceStartup;
             board = new SudokuBoard();
+            processTime = Time.realtimeSinceStartup - processTime;
+            Debug.Log($"Board generated in {processTime*1000} ms");
             UpdateBoard();
             Debug.Log(board);
         }
 
         public static void SolveBoard() {
+            var processTime = Time.realtimeSinceStartup;
             board.PopulateBoard(true);
+            processTime = Time.realtimeSinceStartup - processTime;
+            Debug.Log($"Board solved in {processTime*1000} ms");
             UpdateBoard();
         }
 
@@ -32,14 +38,18 @@ namespace Sudoku {
         public override void OnInspectorGUI() {
             serializedObject.Update();
             if (SudokuManager.board == null) return;
-            foreach (var cell in SudokuManager.board.Cells) {
+            for (var index = 0; index < SudokuManager.board.Cells.Length; index++) {
+                var cell = SudokuManager.board.Cells[index];
                 if (cell.Index % 9 == 0) {
                     EditorGUILayout.BeginHorizontal();
                 }
-                if (GUILayout.Button($"{cell.Value}", GUILayout.Width(50))) {
-                    cell.Value = 0;
+
+                if (GUILayout.Button($"{cell.value}", GUILayout.Width(50))) {
+                    cell.value = 0;
+                    SudokuManager.board.Cells[index] = cell;
                     SudokuManager.UpdateBoard();
                 }
+
                 if (cell.Index % 9 == 8) {
                     EditorGUILayout.EndHorizontal();
                 }

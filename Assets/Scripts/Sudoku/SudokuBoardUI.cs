@@ -47,7 +47,7 @@ namespace Sudoku
 
         public void UpdateBoard(SudokuBoard board) {
             foreach (var cell in _cells.Select((cell, i) => (cell, i))) {
-                cell.cell.SetCellValue(board.Cells[cell.i].Value.ToString());
+                cell.cell.SetCellValue(board.Cells[cell.i].value.ToString());
             }
         }
 
