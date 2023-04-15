@@ -15,13 +15,17 @@ namespace Sudoku {
     }
 
     public class SudokuBoard {
-        public       Cell[] Cells { get; private set; }
-        public int[] Solution { get; private set; }
-        public const int        BOARD_SIZE     = 9;
-        public const int        SUB_BOARD_SIZE = 3;
+        public       Cell[] Cells    { get; private set; }
+        public       int[]  Solution { get; private set; }
+        public const int    BOARD_SIZE          = 9;
+        public const int    SUB_BOARD_SIZE      = 3;
+        public const int    CELL_COUNT          = BOARD_SIZE * BOARD_SIZE;
+        public const int    MIN_HINT_AMOUNT     = 24;
+        public const int    MAX_HINT_AMOUNT     = CELL_COUNT - 1;
+        public const int    MAX_RECURSION_DEPTH = CELL_COUNT * CELL_COUNT;
 
         public SudokuBoard() {
-            Cells = new Cell[BOARD_SIZE * BOARD_SIZE];
+            Cells = new Cell[CELL_COUNT];
             for (var row = 0; row < BOARD_SIZE; row++) {
                 for (var column = 0; column < BOARD_SIZE; column++) {
                     var index = row * BOARD_SIZE + column;
@@ -33,40 +37,46 @@ namespace Sudoku {
             Solution = Cells.Select(c => c.value).ToArray();
         }
 
-        public void PopulateBoard() {
-            if (!PopulateCell(0, false)) {
+        void PopulateBoard() {
+            var iterations = 0;
+            if (!PopulateCell(0, ref iterations)) {
                 Debug.LogError("Failed to generate board");
             }
         }
 
         public bool SolveBoard() {
-            var firstCell = GetNextEmptyCellIndex(0);
-            if (firstCell < 0) {
-                Debug.Log("Board is already solved");
-                return true;
+            var firstCell  = GetNextEmptyCellIndex(0);
+            var iterations = 0;
+            if (firstCell >= 0) {
+                return PopulateCell(firstCell, ref iterations);
             }
 
-            if (!PopulateCell(firstCell, true)) {
-                return false;
-            }
-
+            Debug.Log("Board is already solved");
             return true;
         }
 
-        bool PopulateCell(int cellIndex, bool solve) {
+        bool PopulateCell(int cellIndex, ref int iterations) {
+            iterations++;
+            if (iterations > MAX_RECURSION_DEPTH) {
+                Debug.Log($"Too many iterations when solving board {iterations}");
+                iterations = 0;
+                return false;
+            }
+
             var numbers = new int[BOARD_SIZE];
             for (var i = 0; i < BOARD_SIZE; i++) {
                 numbers[i] = i + 1;
             }
 
-            if (cellIndex is >= BOARD_SIZE * BOARD_SIZE or < 0) {
+            if (cellIndex is >= CELL_COUNT or < 0) {
+                iterations = 0;
                 return true;
             }
 
             numbers = numbers.Where(number => IsCellValid(cellIndex, number)).ToArray();
             SetCellValue(cellIndex, 0);
             Shuffle(numbers);
-            var nextCell = solve ? GetNextEmptyCellIndex(cellIndex) : GetNextCellIndex(cellIndex);
+            var nextCell = GetNextEmptyCellIndex(cellIndex);
             if (nextCell < -1) {
                 SetCellValue(cellIndex, numbers.FirstOrDefault());
                 return true;
@@ -74,9 +84,11 @@ namespace Sudoku {
 
             foreach (var num in numbers) {
                 SetCellValue(cellIndex, num);
-                if (PopulateCell(nextCell, solve)) {
+                if (PopulateCell(nextCell, ref iterations)) {
                     return true;
                 }
+
+                SetCellValue(cellIndex, 0);
             }
 
             return false;
@@ -88,7 +100,7 @@ namespace Sudoku {
             Cells[cellIndex] = c;
         }
 
-        bool IsCurrentBoardSolution() => Cells.Select((cell, i) => (cell, i)).All(c => c.cell.value == Solution[c.i]);
+        public bool IsCurrentBoardSolution() => Cells.Select((cell, i) => (cell, i)).All(c => c.cell.value == Solution[c.i]);
 
         void SetCellValues(IReadOnlyList<int> values) {
             for (var i = 0; i < values.Count; i++) {
@@ -101,16 +113,16 @@ namespace Sudoku {
         public bool HasUniqueSolution() {
             var valueList = Cells.Select(cell => cell.value).ToList();
             if (!SolveBoard()) {
+                Debug.Log("Board has no solution");
                 return false;
             }
 
             var result = IsCurrentBoardSolution();
             SetCellValues(valueList);
-            Debug.Log($"Board is solution: {result}");
             return result;
         }
 
-        public bool HasUniqueSolution(int cellIndex) {
+        bool HasUniqueSolution(int cellIndex) {
             var valueList = Cells.Select(cell => cell.value).ToList();
             SetCellValue(cellIndex, 0);
             if (!SolveBoard()) {
@@ -121,7 +133,6 @@ namespace Sudoku {
 
             var result = IsCurrentBoardSolution();
             SetCellValues(valueList);
-            Debug.Log($"Board is solution: {result}");
             return result;
         }
 
@@ -134,43 +145,79 @@ namespace Sudoku {
             }
         }
 
-        public void RemoveCells(Difficulty difficulty) {
-            var cellsToRemove = difficulty switch {
-                Difficulty.Easy   => 40,
-                Difficulty.Medium => 50,
-                Difficulty.Hard   => 60,
-                Difficulty.Expert => 70,
-                _                 => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
-            };
+        public void ApplyKnownSolution() => SetCellValues(Solution);
 
-            var rand = new Random();
-            rand.InitState((uint)Time.frameCount);
-            var steps = 0;
-            var validIndices = Cells.Select((cell, i) => (cell, i)).Where(c => c.cell.value != 0).Select(c => c.i).ToList();
-            Shuffle(validIndices);
-            if (!RemoveCell(ref cellsToRemove)) {
-                Debug.LogError("Failed to remove cells");
+        public void RemoveCells(Difficulty difficulty) {
+            Debug.Log($"Removing cells for difficulty {difficulty}");
+            var numberOfAttempts = 0;
+            var iterations       = 0;
+            while (true) {
+                ApplyKnownSolution();
+                var cellsToRemove = GetDifficultyHoleAmount(difficulty);
+                var usedIndices   = new HashSet<int>();
+                var validIndices  = Cells.Select((cell, i) => (cell, i)).Where(c => c.cell.value != 0).Select(c => c.i).ToList();
+                Shuffle(validIndices);
+                if (!RemoveCell(ref cellsToRemove, usedIndices, ref iterations)) {
+                    Debug.LogError("Failed to remove cells");
+                }
+                iterations = 0;
+                numberOfAttempts++;
+                if (numberOfAttempts > 10) {
+                    Debug.LogError("Failed to remove cells after 10 attempts");
+                    break;
+                }
+
+                if (!HasUniqueSolution()) continue;
+                Debug.Log($"Found unique solution after {numberOfAttempts} attempts ({difficulty})");
+                break;
             }
         }
 
-        bool RemoveCell(ref int cellsToRemove) {
+        bool RemoveCell(ref int cellsToRemove, ISet<int> usedIndices, ref int iterations) {
+            iterations++;
+            Debug.Assert(iterations < MAX_RECURSION_DEPTH, $"Failed to remove cells after {MAX_RECURSION_DEPTH} iterations");
+            if (iterations > MAX_RECURSION_DEPTH) {
+                return false;
+            }
+
+            if (cellsToRemove > CELL_COUNT - MIN_HINT_AMOUNT) {
+                return false;
+            }
+
+            if (usedIndices.Count >= CELL_COUNT - MIN_HINT_AMOUNT) {
+                return false;
+            }
+
             if (cellsToRemove <= 0) {
+                if (!HasUniqueSolution()) {
+                    Debug.LogError("Removed last cell but board is still not solvable");
+                    return false;
+                }
+
+                Debug.Log("Removed last cell and found unique solution");
                 return true;
             }
 
-            var nonEmptyCells = Cells.Where(c => c.value != 0).Select(c => c.Index).ToList();
+            var nonEmptyCells = Cells.Where(c => c.value != 0 && !usedIndices.Contains(c.Index)).Select(c => c.Index).ToList();
+            Debug.Assert(nonEmptyCells.Count > 0, "No more cells to remove, board will never be solvable.");
+            if (nonEmptyCells.Count == 0) {
+                return false;
+            }
+
             Shuffle(nonEmptyCells);
 
             foreach (var index in nonEmptyCells) {
                 if (!HasUniqueSolution(index)) {
+                    usedIndices.Add(index);
                     continue;
                 }
 
                 SetCellValue(index, 0);
                 cellsToRemove--;
-                if (RemoveCell(ref cellsToRemove)) {
+                if (RemoveCell(ref cellsToRemove, usedIndices, ref iterations)) {
                     return true;
                 }
+
                 SetCellValue(index, Solution[index]);
                 cellsToRemove++;
             }
@@ -178,17 +225,17 @@ namespace Sudoku {
             return false;
         }
 
-        int GetNextCellIndex(int cellIndex) {
-            if (cellIndex is >= BOARD_SIZE * BOARD_SIZE or < 0) {
+        static int GetNextCellIndex(int cellIndex) {
+            if (cellIndex is >= CELL_COUNT or < 0) {
                 return -1;
             }
 
             var nextIndex = cellIndex + 1;
-            return nextIndex >= BOARD_SIZE * BOARD_SIZE ? -1 : nextIndex;
+            return nextIndex >= CELL_COUNT ? -1 : nextIndex;
         }
 
         int GetNextEmptyCellIndex(int cellIndex) {
-            if (cellIndex is >= BOARD_SIZE * BOARD_SIZE or < 0) {
+            if (cellIndex is >= CELL_COUNT or < 0) {
                 return -1;
             }
 
@@ -196,19 +243,21 @@ namespace Sudoku {
             if (nextCellIndex < 0) {
                 return -1;
             }
-            var nextCell      = Cells[nextCellIndex];
+
+            var nextCell = Cells[nextCellIndex];
             while (nextCell.value != 0) {
                 nextCellIndex = GetNextCellIndex(nextCellIndex);
                 if (nextCellIndex < 0) {
                     return -1;
                 }
+
                 nextCell = Cells[nextCellIndex];
             }
 
             return nextCellIndex;
         }
 
-        bool IsCellValid(Cell? cell, int value) {
+        public bool IsCellValid(Cell? cell, int value) {
             if (cell == null) {
                 return false;
             }
@@ -219,7 +268,7 @@ namespace Sudoku {
         }
 
         bool IsCellValid(int cellIndex, int value) {
-            if (cellIndex is < 0 or >= BOARD_SIZE * BOARD_SIZE) {
+            if (cellIndex is < 0 or >= CELL_COUNT) {
                 return false;
             }
 
@@ -228,7 +277,7 @@ namespace Sudoku {
             return IsCellValid(cellData);
         }
 
-        bool IsCellValid(Cell cell) {
+        public bool IsCellValid(Cell cell) {
             if (cell.value == 0) {
                 return false;
             }
@@ -258,6 +307,18 @@ namespace Sudoku {
 
             return true;
         }
+
+        public bool IsBoardValid() => Cells?.All(IsCellValid) == true;
+
+        public static int GetDifficultyHoleAmount(Difficulty difficulty) => difficulty switch {
+            Difficulty.Easy   => CELL_COUNT - MIN_HINT_AMOUNT - 30,
+            Difficulty.Medium => CELL_COUNT - MIN_HINT_AMOUNT - 20,
+            Difficulty.Hard   => CELL_COUNT - MIN_HINT_AMOUNT - 10,
+            Difficulty.Expert => CELL_COUNT - MIN_HINT_AMOUNT,
+            _                 => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
+        };
+
+        public int GetBoardHoleAmount() => Cells.Count(c => c.value == 0);
 
         public Cell GetCell(int row, int column) => Cells[row * BOARD_SIZE + column];
 

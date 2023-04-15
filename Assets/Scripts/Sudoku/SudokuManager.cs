@@ -82,6 +82,11 @@ namespace Sudoku {
                 SudokuManager.board.HasUniqueSolution();
             }
 
+            if (GUILayout.Button("Reset Board")) {
+                SudokuManager.board.ApplyKnownSolution();
+                SudokuManager.UpdateBoard();
+            }
+
             serializedObject.ApplyModifiedProperties();
         }
     }
