@@ -25,11 +25,11 @@
                 <ui:Button text="8" display-tooltip-when-elided="true" name="8" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
                 <ui:Button text="9" display-tooltip-when-elided="true" name="9" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
             </ui:VisualElement>
-            <ui:VisualElement name="Mascot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); justify-content: flex-start; align-items: flex-start; align-self: flex-start; flex-direction: row; position: relative; bottom: -140px;">
+            <ui:VisualElement name="Mascot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); justify-content: flex-start; align-items: flex-start; align-self: flex-start; flex-direction: row; position: relative; bottom: 52px;">
                 <ui:Button display-tooltip-when-elided="true" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/unnamed.png?fileID=2800000&amp;guid=d1c0a007f48ffd643a8577729f64c469&amp;type=3#unnamed&apos;); height: 429px; width: 419px; background-color: rgba(188, 188, 188, 0);" />
-                <ui:TextField picking-mode="Ignore" label="hint" value="Buru nyuu(hints goes here)" style="height: 170px; width: 445px; flex-direction: column-reverse; align-self: flex-start; font-size: 30px;" />
+                <ui:TextField picking-mode="Ignore" value="Buru nyuu(hints goes here)" style="height: 170px; width: 445px; flex-direction: column-reverse; align-self: flex-start; font-size: 30px;" />
             </ui:VisualElement>
-            <ui:Button text="Submit" display-tooltip-when-elided="true" name="Submit" style="-unity-text-align: middle-center; white-space: normal; padding-left: 100px; margin-left: 4px; margin-top: 2px; left: 600px; bottom: -450px; padding-right: 100px; padding-top: 50px; padding-bottom: 50px; text-overflow: clip; font-size: 28px;" />
+            <ui:Button text="Submit" display-tooltip-when-elided="true" name="Submit" style="-unity-text-align: middle-center; white-space: normal; padding-left: 100px; margin-left: 4px; margin-top: 2px; left: 550px; bottom: 317px; padding-right: 100px; padding-top: 50px; padding-bottom: 50px; text-overflow: clip; font-size: 28px; align-self: flex-start;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
