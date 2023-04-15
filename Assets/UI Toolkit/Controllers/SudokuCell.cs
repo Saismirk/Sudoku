@@ -30,7 +30,7 @@ namespace UI_Toolkit.Controllers {
 
         public void SetCellValue(string value) {
             var label = this.Q<Label>();
-            label.text = value;
+            label.text = value == "0" ? string.Empty : value;
         }
 
         public void SetCellIndex(int index) {

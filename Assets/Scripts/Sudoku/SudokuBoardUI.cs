@@ -15,6 +15,7 @@ namespace Sudoku
 
         void Start() {
             _boardContainer = boardUI.rootVisualElement.Q<VisualElement>("BoardBase");
+            Debug.Assert(_boardContainer != null, "BoardBase not found");
         }
 
         void OnEnable() {
