@@ -5,6 +5,7 @@ using UnityEngine.Serialization;
 
 namespace Sudoku {
     public class SudokuManager : MonoBehaviour {
+        [SerializeField] Difficulty difficulty = Difficulty.Easy;
         public static event Action<SudokuBoard> OnBoardGenerated;
 
         public static SudokuBoard board;
@@ -22,9 +23,18 @@ namespace Sudoku {
             Debug.Log(board);
         }
 
+        public void GeneratePlayableBoard() {
+            if (board == null) {
+                GenerateBoard();
+            }
+
+            board?.RemoveCells(difficulty);
+            UpdateBoard();
+        }
+
         public static void SolveBoard() {
             var processTime = Time.realtimeSinceStartup;
-            board.PopulateBoard(true);
+            board.SolveBoard();
             processTime = Time.realtimeSinceStartup - processTime;
             Debug.Log($"Board solved in {processTime*1000} ms");
             UpdateBoard();
@@ -37,6 +47,7 @@ namespace Sudoku {
     public class SudokuManagerEditor : Editor {
         public override void OnInspectorGUI() {
             serializedObject.Update();
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("difficulty"));
             if (SudokuManager.board == null) return;
             for (var index = 0; index < SudokuManager.board.Cells.Length; index++) {
                 var cell = SudokuManager.board.Cells[index];
@@ -61,6 +72,10 @@ namespace Sudoku {
 
             if (GUILayout.Button("Solve Board")) {
                 SudokuManager.SolveBoard();
+            }
+
+            if (GUILayout.Button("Generate Playable Board")) {
+                ((SudokuManager) target).GeneratePlayableBoard();
             }
 
             if (GUILayout.Button("Check Solutions")) {

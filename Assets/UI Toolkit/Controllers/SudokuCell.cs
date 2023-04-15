@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 namespace UI_Toolkit.Controllers {
@@ -22,6 +23,12 @@ namespace UI_Toolkit.Controllers {
         public SudokuCell() {
             var label = new Label();
             Add(label);
+            label.pickingMode = PickingMode.Ignore;
+            RegisterCallback<ClickEvent>(OnClickEventListener);
+        }
+
+        void OnClickEventListener(ClickEvent evt) {
+            Debug.Log($"Cell {CellIndex} clicked");
         }
 
         public void UpdateCellValue() {
@@ -36,5 +43,6 @@ namespace UI_Toolkit.Controllers {
         public void SetCellIndex(int index) {
             CellIndex = index;
         }
+
     }
 }

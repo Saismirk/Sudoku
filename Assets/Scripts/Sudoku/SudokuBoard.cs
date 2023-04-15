@@ -16,6 +16,7 @@ namespace Sudoku {
 
     public class SudokuBoard {
         public       Cell[] Cells { get; private set; }
+        public int[] Solution { get; private set; }
         public const int        BOARD_SIZE     = 9;
         public const int        SUB_BOARD_SIZE = 3;
 
@@ -29,12 +30,27 @@ namespace Sudoku {
             }
 
             PopulateBoard();
+            Solution = Cells.Select(c => c.value).ToArray();
         }
 
-        public void PopulateBoard(bool solve = false) {
-            if (!PopulateCell(0, solve)) {
+        public void PopulateBoard() {
+            if (!PopulateCell(0, false)) {
                 Debug.LogError("Failed to generate board");
             }
+        }
+
+        public bool SolveBoard() {
+            var firstCell = GetNextEmptyCellIndex(0);
+            if (firstCell < 0) {
+                Debug.Log("Board is already solved");
+                return true;
+            }
+
+            if (!PopulateCell(firstCell, true)) {
+                return false;
+            }
+
+            return true;
         }
 
         bool PopulateCell(int cellIndex, bool solve) {
@@ -72,6 +88,8 @@ namespace Sudoku {
             Cells[cellIndex] = c;
         }
 
+        bool IsCurrentBoardSolution() => Cells.Select((cell, i) => (cell, i)).All(c => c.cell.value == Solution[c.i]);
+
         void SetCellValues(IReadOnlyList<int> values) {
             for (var i = 0; i < values.Count; i++) {
                 var c = Cells[i];
@@ -80,55 +98,31 @@ namespace Sudoku {
             }
         }
 
-        int FindSolutions(int cellIndex, ref int solutions, IReadOnlyList<int> values) {
-            if (cellIndex is >= BOARD_SIZE * BOARD_SIZE or < 0) {
-                return solutions;
+        public bool HasUniqueSolution() {
+            var valueList = Cells.Select(cell => cell.value).ToList();
+            if (!SolveBoard()) {
+                return false;
             }
 
-            var cell    = Cells[cellIndex];
-            var numbers = new int[BOARD_SIZE];
-            for (var i = 0; i < BOARD_SIZE; i++) {
-                numbers[i] = i + 1;
-            }
-
-            numbers = numbers.Where(number => IsCellValid(cell, number)).ToArray();
-            var c = Cells[cellIndex];
-            c.value = 0;
-            Cells[cellIndex] = c;
-            Shuffle(numbers);
-            var nextCell = GetNextEmptyCellIndex(cellIndex);
-            if (nextCell < 0) {
-                SetCellValues(values);
-                solutions++;
-                return solutions;
-            }
-
-            foreach (var num in numbers) {
-                c = Cells[cellIndex];
-                c.value = num;
-                Cells[cellIndex] = c;
-                if (FindSolutions(nextCell, ref solutions, values) > 2) {
-                    return solutions;
-                }
-            }
-
-            return solutions;
+            var result = IsCurrentBoardSolution();
+            SetCellValues(valueList);
+            Debug.Log($"Board is solution: {result}");
+            return result;
         }
 
-        public bool HasUniqueSolution() {
-            var solutions = 0;
-            var firstCell = GetNextEmptyCellIndex(0);
-            if (firstCell < 0) {
-                Debug.Log("Board is already solved");
-                return true;
+        public bool HasUniqueSolution(int cellIndex) {
+            var valueList = Cells.Select(cell => cell.value).ToList();
+            SetCellValue(cellIndex, 0);
+            if (!SolveBoard()) {
+                Debug.Log($"Board has no solution when removing cell {cellIndex}");
+                SetCellValues(valueList);
+                return false;
             }
 
-            var valueList = Cells.Select(cell => cell.value).ToList();
-            FindSolutions(firstCell, ref solutions, valueList);
-            Debug.Log($"Found {solutions} solutions");
-            Debug.Log($"{this}");
+            var result = IsCurrentBoardSolution();
             SetCellValues(valueList);
-            return solutions == 1;
+            Debug.Log($"Board is solution: {result}");
+            return result;
         }
 
         static void Shuffle<T>(IList<T> array) {
@@ -138,6 +132,50 @@ namespace Sudoku {
                 var j = rand.NextInt(i + 1);
                 (array[i], array[j]) = (array[j], array[i]);
             }
+        }
+
+        public void RemoveCells(Difficulty difficulty) {
+            var cellsToRemove = difficulty switch {
+                Difficulty.Easy   => 40,
+                Difficulty.Medium => 50,
+                Difficulty.Hard   => 60,
+                Difficulty.Expert => 70,
+                _                 => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
+            };
+
+            var rand = new Random();
+            rand.InitState((uint)Time.frameCount);
+            var steps = 0;
+            var validIndices = Cells.Select((cell, i) => (cell, i)).Where(c => c.cell.value != 0).Select(c => c.i).ToList();
+            Shuffle(validIndices);
+            if (!RemoveCell(ref cellsToRemove)) {
+                Debug.LogError("Failed to remove cells");
+            }
+        }
+
+        bool RemoveCell(ref int cellsToRemove) {
+            if (cellsToRemove <= 0) {
+                return true;
+            }
+
+            var nonEmptyCells = Cells.Where(c => c.value != 0).Select(c => c.Index).ToList();
+            Shuffle(nonEmptyCells);
+
+            foreach (var index in nonEmptyCells) {
+                if (!HasUniqueSolution(index)) {
+                    continue;
+                }
+
+                SetCellValue(index, 0);
+                cellsToRemove--;
+                if (RemoveCell(ref cellsToRemove)) {
+                    return true;
+                }
+                SetCellValue(index, Solution[index]);
+                cellsToRemove++;
+            }
+
+            return false;
         }
 
         int GetNextCellIndex(int cellIndex) {
@@ -155,6 +193,9 @@ namespace Sudoku {
             }
 
             var nextCellIndex = GetNextCellIndex(cellIndex);
+            if (nextCellIndex < 0) {
+                return -1;
+            }
             var nextCell      = Cells[nextCellIndex];
             while (nextCell.value != 0) {
                 nextCellIndex = GetNextCellIndex(nextCellIndex);

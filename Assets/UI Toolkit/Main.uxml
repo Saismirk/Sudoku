@@ -1,17 +1,17 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="Block" src="project://database/Assets/UI%20Toolkit/Block.uxml?fileID=9197481963319205126&amp;guid=89369a90316c2be4590567bf66d2dfbe&amp;type=3#Block" />
     <Style src="project://database/Assets/UI%20Toolkit/USS/sudoku.uss?fileID=7433441132597879392&amp;guid=5a5e6d2cdc4d1c94db4735f04684c2d4&amp;type=3#sudoku" />
-    <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgb(45, 50, 58);">
-        <ui:VisualElement name="BoardBase" style="flex-grow: 0; background-color: rgba(45, 50, 58, 0); width: 1000px; height: 1000px; position: relative; flex-shrink: 0; left: auto; right: auto; top: auto; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 30px; border-bottom-left-radius: 30px; border-top-right-radius: 30px; border-bottom-right-radius: 30px; align-items: flex-start; justify-content: center; align-self: center; flex-direction: row; flex-wrap: wrap;">
-            <ui:Instance template="Block" name="Block_0" class="sudoku_block" style="width: 30%; height: 30%;" />
-            <ui:Instance template="Block" name="Block_1" class="sudoku_block" style="width: 30%; height: 30%;" />
-            <ui:Instance template="Block" name="Block_2" class="sudoku_block" style="width: 30%; height: 30%;" />
-            <ui:Instance template="Block" name="Block_3" class="sudoku_block" style="width: 30%; height: 30%;" />
-            <ui:Instance template="Block" name="Block_4" class="sudoku_block" style="width: 30%; height: 30%;" />
-            <ui:Instance template="Block" name="Block_5" class="sudoku_block" style="width: 30%; height: 30%;" />
-            <ui:Instance template="Block" name="Block_6" class="sudoku_block" style="width: 30%; height: 30%;" />
-            <ui:Instance template="Block" name="Block_7" class="sudoku_block" style="width: 30%; height: 30%;" />
-            <ui:Instance template="Block" name="Block_8" class="sudoku_block" style="width: 30%; height: 30%;" />
+    <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgb(45, 50, 58);">
+        <ui:VisualElement name="BoardBase" picking-mode="Ignore" style="flex-grow: 0; background-color: rgba(45, 50, 58, 0); width: 1000px; height: 1000px; position: relative; flex-shrink: 0; left: auto; right: auto; top: auto; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 30px; border-bottom-left-radius: 30px; border-top-right-radius: 30px; border-bottom-right-radius: 30px; align-items: flex-start; justify-content: center; align-self: center; flex-direction: row; flex-wrap: wrap;">
+            <ui:Instance template="Block" name="Block_0" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
+            <ui:Instance template="Block" name="Block_1" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
+            <ui:Instance template="Block" name="Block_2" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
+            <ui:Instance template="Block" name="Block_3" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
+            <ui:Instance template="Block" name="Block_4" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
+            <ui:Instance template="Block" name="Block_5" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
+            <ui:Instance template="Block" name="Block_6" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
+            <ui:Instance template="Block" name="Block_7" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
+            <ui:Instance template="Block" name="Block_8" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
