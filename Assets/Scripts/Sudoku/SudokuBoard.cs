@@ -58,7 +58,6 @@ namespace Sudoku {
         bool PopulateCell(int cellIndex, ref int iterations) {
             iterations++;
             if (iterations > MAX_RECURSION_DEPTH) {
-                Debug.Log($"Too many iterations when solving board {iterations}");
                 iterations = 0;
                 return false;
             }

@@ -118,3 +118,27 @@
     color: rgb(255, 255, 255);
     flex-shrink: 0;
 }
+
+.sudoku_cell.selected {
+    background-color: rgba(24, 29, 130, 0.54);
+}
+
+.sudoku_cell.highlighted {
+    background-color: rgb(55, 64, 77);
+}
+
+.sudoku_cell_top-right {
+    border-top-right-radius: 7px;
+}
+
+.sudoku_cell_top-left {
+    border-top-left-radius: 7px;
+}
+
+.sudoku_cell_bottom-left {
+    border-bottom-left-radius: 7px;
+}
+
+.sudoku_cell_bottom-right {
+    border-bottom-right-radius: 7px;
+}

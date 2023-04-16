@@ -10,6 +10,8 @@ namespace Sudoku {
 
         public static SudokuBoard board;
 
+        public static Cell CurrentSelectedCell { get; private set; }
+
         void Start() {
             GenerateBoard();
         }
