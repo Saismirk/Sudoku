@@ -59,9 +59,9 @@ namespace UI_Toolkit.Controllers {
 
         void UpdateCellValue() => SetCellValue(_cellValue);
 
-        public void UpdateCellState(CellState state) {
+        public bool UpdateCellState(CellState state) {
             if (State == state) {
-                return;
+                return false;
             }
 
             State = state;
@@ -79,6 +79,8 @@ namespace UI_Toolkit.Controllers {
                     RemoveFromClassList(SELECTED_CLASS);
                     break;
             }
+
+            return true;
         }
 
         public void SetCellValue(string value) {

@@ -11,6 +11,8 @@
     align-self: flex-start;
     height: 100%;
     flex-shrink: 0;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-out;
 }
 
 .sudoku_column {
@@ -27,6 +29,8 @@
     height: 33.33333%;
     border-bottom-width: 3px;
     flex-shrink: 0;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-out;
 }
 
 .sudoku_row_big {
@@ -117,6 +121,8 @@
     -unity-text-align: middle-center;
     color: rgb(255, 255, 255);
     flex-shrink: 0;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-out;
 }
 
 .sudoku_cell.selected {
@@ -141,4 +147,8 @@
 
 .sudoku_cell_bottom-right {
     border-bottom-right-radius: 7px;
+}
+
+.highlighted {
+    background-color: rgb(55, 64, 77);
 }

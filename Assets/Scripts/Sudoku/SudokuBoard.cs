@@ -15,8 +15,9 @@ namespace Sudoku {
     }
 
     public class SudokuBoard {
-        public       Cell[] Cells    { get; private set; }
-        public       int[]  Solution { get; private set; }
+        public       Cell[] Cells                  { get; private set; }
+        public       int[]  HighlightedCellIndices { get; private set; } = new int[BOARD_SIZE * 3 - 2];
+        public       int[]  Solution               { get; private set; }
         public const int    BOARD_SIZE          = 9;
         public const int    SUB_BOARD_SIZE      = 3;
         public const int    CELL_COUNT          = BOARD_SIZE * BOARD_SIZE;
@@ -236,20 +237,25 @@ namespace Sudoku {
         }
 
         public ReadOnlySpan<int> GetValidationCellIndices(int cellIndex) {
-            if ((uint)cellIndex >= CELL_COUNT) { return Array.Empty<int>(); }
+            if ((uint)cellIndex >= CELL_COUNT) {
+                return Array.Empty<int>();
+            }
 
-            var   cell    = Cells[cellIndex];
-            var indices = new int[BOARD_SIZE * 3 - 2];
-            var   index   = 0;
+            var cell    = Cells[cellIndex];
+            var index   = 0;
 
             var rowIndexStart = cell.Position.Row * BOARD_SIZE;
             for (var i = rowIndexStart; i < rowIndexStart + BOARD_SIZE; i++) {
-                if (i != cellIndex) { indices[index++] = i; }
+                if (i != cellIndex) {
+                    HighlightedCellIndices[index++] = i;
+                }
             }
 
             var columnIndexStart = cell.Position.Column;
             for (var i = columnIndexStart; i < CELL_COUNT; i += BOARD_SIZE) {
-                if (i != cellIndex) { indices[index++] = i; }
+                if (i != cellIndex) {
+                    HighlightedCellIndices[index++] = i;
+                }
             }
 
             var blockRowIndexStart    = (cell.Position.Row / SUB_BOARD_SIZE) * SUB_BOARD_SIZE;
@@ -257,19 +263,23 @@ namespace Sudoku {
             for (var i = blockRowIndexStart; i < blockRowIndexStart + SUB_BOARD_SIZE; i++) {
                 for (var j = blockColumnIndexStart; j < blockColumnIndexStart + SUB_BOARD_SIZE; j++) {
                     var blockIndex = i * BOARD_SIZE + j;
-                    if (blockIndex != cellIndex) { indices[index++] = blockIndex; }
+                    if (blockIndex != cellIndex) {
+                        HighlightedCellIndices[index++] = blockIndex;
+                    }
                 }
             }
 
-            return indices.AsSpan(0, index);
+            return HighlightedCellIndices.AsSpan(0, index);
         }
 
-        IEnumerable<int> GetCellRowIndices(Cell cell)    => Cells.Where(c => c.Position.Row == cell.Position.Row)
-                                                                 .Select(c => c.Index);
+        IEnumerable<int> GetCellRowIndices(Cell cell) => Cells.Where(c => c.Position.Row == cell.Position.Row)
+                                                              .Select(c => c.Index);
+
         IEnumerable<int> GetCellColumnIndices(Cell cell) => Cells.Where(c => c.Position.Column == cell.Position.Column)
                                                                  .Select(c => c.Index);
-        IEnumerable<int> GetCellBlockIndices(Cell cell)  => Cells.Where(c => c.Position.Block == cell.Position.Block)
-                                                                 .Select(c => c.Index);
+
+        IEnumerable<int> GetCellBlockIndices(Cell cell) => Cells.Where(c => c.Position.Block == cell.Position.Block)
+                                                                .Select(c => c.Index);
 
         int GetNextEmptyCellIndex(int cellIndex) {
             if (cellIndex is >= CELL_COUNT or < 0) {
