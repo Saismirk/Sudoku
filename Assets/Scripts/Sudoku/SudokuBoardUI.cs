@@ -20,10 +20,12 @@ namespace Sudoku
 
         void OnEnable() {
             SudokuManager.OnBoardGenerated += OnBoardGenerated;
+            SudokuCell.OnCellClicked += OnCellClicked;
         }
 
         void OnDisable() {
             SudokuManager.OnBoardGenerated -= OnBoardGenerated;
+            SudokuCell.OnCellClicked -= OnCellClicked;
         }
 
         void OnBoardGenerated(SudokuBoard board) {
@@ -51,6 +53,15 @@ namespace Sudoku
             foreach (var cell in _cells.Select((cell, i) => (cell, i))) {
                 cell.cell.SetCellValue(board.Cells[cell.i].value.ToString());
             }
+        }
+
+        void OnCellClicked (int cellIndex) {
+            _cells.ForEach(cell => cell.UpdateCellState(SudokuCell.CellState.None));
+            var cellsToHighlight = SudokuManager.board.GetValidationCellIndices(cellIndex);
+            foreach (var highlightCellIndex in cellsToHighlight) {
+                _cells[highlightCellIndex].UpdateCellState(SudokuCell.CellState.Highlighted);
+            }
+            _cells[cellIndex].UpdateCellState(SudokuCell.CellState.Selected);
         }
 
     }

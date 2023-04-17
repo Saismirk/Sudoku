@@ -236,13 +236,32 @@ namespace Sudoku {
         }
 
         public ReadOnlySpan<int> GetValidationCellIndices(int cellIndex) {
-            if (cellIndex is >= CELL_COUNT or < 0) {
-                return Array.Empty<int>();
+            if ((uint)cellIndex >= CELL_COUNT) { return Array.Empty<int>(); }
+
+            var   cell    = Cells[cellIndex];
+            var indices = new int[BOARD_SIZE * 3 - 2];
+            var   index   = 0;
+
+            var rowIndexStart = cell.Position.Row * BOARD_SIZE;
+            for (var i = rowIndexStart; i < rowIndexStart + BOARD_SIZE; i++) {
+                if (i != cellIndex) { indices[index++] = i; }
             }
 
-            var cell = Cells[cellIndex];
-            return (ReadOnlySpan<int>)GetCellRowIndices(cell).Concat(GetCellColumnIndices(cell))
-                                                             .Concat(GetCellBlockIndices(cell)).ToArray();
+            var columnIndexStart = cell.Position.Column;
+            for (var i = columnIndexStart; i < CELL_COUNT; i += BOARD_SIZE) {
+                if (i != cellIndex) { indices[index++] = i; }
+            }
+
+            var blockRowIndexStart    = (cell.Position.Row / SUB_BOARD_SIZE) * SUB_BOARD_SIZE;
+            var blockColumnIndexStart = (cell.Position.Column / SUB_BOARD_SIZE) * SUB_BOARD_SIZE;
+            for (var i = blockRowIndexStart; i < blockRowIndexStart + SUB_BOARD_SIZE; i++) {
+                for (var j = blockColumnIndexStart; j < blockColumnIndexStart + SUB_BOARD_SIZE; j++) {
+                    var blockIndex = i * BOARD_SIZE + j;
+                    if (blockIndex != cellIndex) { indices[index++] = blockIndex; }
+                }
+            }
+
+            return indices.AsSpan(0, index);
         }
 
         IEnumerable<int> GetCellRowIndices(Cell cell)    => Cells.Where(c => c.Position.Row == cell.Position.Row)

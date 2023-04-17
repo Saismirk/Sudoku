@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
@@ -27,10 +30,9 @@ namespace UI_Toolkit.Controllers {
         const string SELECTED_CLASS    = "selected";
         const string HIGHLIGHTED_CLASS = "highlighted";
 
-        public static event System.Action<int> OnCellClicked;
+        public static event Action<int> OnCellClicked;
 
-        public bool      IsSelected { get; private set; }
-        public CellState State      { get; private set; }
+        public CellState State { get; private set; }
 
         string _cellValue;
         bool   _initialized;
@@ -49,26 +51,19 @@ namespace UI_Toolkit.Controllers {
             if (_initialized) {
                 return;
             }
-            OnCellClicked += _ => UpdateCellState(CellState.None);
+
             _initialized = true;
         }
 
-        void OnClickEventListener(ClickEvent evt) {
-            Debug.Log($"Cell {CellIndex} clicked");
-            OnCellClicked?.Invoke(CellIndex);
-            UpdateCellState(CellState.Selected);
-        }
+        void OnClickEventListener(ClickEvent evt) => OnCellClicked?.Invoke(CellIndex);
 
-        public void UpdateCellValue() {
-            SetCellValue(_cellValue);
-        }
+        void UpdateCellValue() => SetCellValue(_cellValue);
 
-        void UpdateCellState(CellState state) {
+        public void UpdateCellState(CellState state) {
             if (State == state) {
                 return;
             }
 
-            Debug.Log($"Cell {CellIndex} state changed to {state}");
             State = state;
             switch (State) {
                 case CellState.None:
