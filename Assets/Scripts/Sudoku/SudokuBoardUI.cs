@@ -63,13 +63,15 @@ namespace Sudoku {
             var cell = SudokuManager.board.Cells[cellIndex];
             foreach (var block in _blocks) {
                 block.HighlightBlock(false);
+                await UniTask.Yield();
             }
 
             await UniTask.Yield();
             _blocks[cell.Position.Block].HighlightBlock(true);
-            HighlightBlockRows(cell);
-            HighlightBlockColumns(cell);
-            await HighlightCell(cell);
+            await UniTask.Yield();
+            HighlightBlockRows(cell).Forget();
+            HighlightBlockColumns(cell).Forget();
+            HighlightCell(cell).Forget();
         }
 
         async UniTask HighlightCell(Cell cell) {
@@ -81,7 +83,7 @@ namespace Sudoku {
                     continue;
                 }
 
-                if (_cells[i].UpdateCellState(SudokuCell.CellState.None) && batch > 10) {
+                if (_cells[i].UpdateCellState(SudokuCell.CellState.None) && batch > 20) {
                     batch = 0;
                     await UniTask.Yield();
                 }
@@ -90,10 +92,11 @@ namespace Sudoku {
             }
         }
 
-        void HighlightBlockRows(Cell cell) {
+        async UniTask HighlightBlockRows(Cell cell) {
             var blockRowIndexStart = cell.Position.Block - cell.Position.Block % SudokuBoard.SUB_BOARD_SIZE;
             for (var i = blockRowIndexStart; i < blockRowIndexStart + SudokuBoard.SUB_BOARD_SIZE; i++) {
                 if (i == cell.Position.Block) {
+                    await UniTask.Yield();
                     continue;
                 }
 
@@ -101,10 +104,11 @@ namespace Sudoku {
             }
         }
 
-        void HighlightBlockColumns(Cell cell) {
+        async UniTask HighlightBlockColumns(Cell cell) {
             var blockColumnIndexStart = cell.Position.Block % SudokuBoard.SUB_BOARD_SIZE;
             for (var i = blockColumnIndexStart; i < SudokuBoard.SUB_BOARD_SIZE * SudokuBoard.SUB_BOARD_SIZE; i += SudokuBoard.SUB_BOARD_SIZE) {
                 if (i == cell.Position.Block) {
+                    await UniTask.Yield();
                     continue;
                 }
 

@@ -14,6 +14,7 @@ namespace Sudoku {
 
         void Start() {
             GenerateBoard();
+            Application.targetFrameRate = 120;
         }
 
         public static void GenerateBoard() {
