@@ -29,7 +29,8 @@ namespace Sudoku {
             for (var row = 0; row < BOARD_SIZE; row++) {
                 for (var column = 0; column < BOARD_SIZE; column++) {
                     var index = row * BOARD_SIZE + column;
-                    Cells[index] = new Cell(0, new BoardPosition(row, column));
+                    var block = row / SUB_BOARD_SIZE * SUB_BOARD_SIZE + column / SUB_BOARD_SIZE;
+                    Cells[index] = new Cell(0, new BoardPosition(row, column, block));
                 }
             }
 
@@ -159,6 +160,7 @@ namespace Sudoku {
                 if (!RemoveCell(ref cellsToRemove, usedIndices, ref iterations)) {
                     Debug.LogError("Failed to remove cells");
                 }
+
                 iterations = 0;
                 numberOfAttempts++;
                 if (numberOfAttempts > 10) {
@@ -233,6 +235,23 @@ namespace Sudoku {
             return nextIndex >= CELL_COUNT ? -1 : nextIndex;
         }
 
+        public ReadOnlySpan<int> GetValidationCellIndices(int cellIndex) {
+            if (cellIndex is >= CELL_COUNT or < 0) {
+                return Array.Empty<int>();
+            }
+
+            var cell = Cells[cellIndex];
+            return (ReadOnlySpan<int>)GetCellRowIndices(cell).Concat(GetCellColumnIndices(cell))
+                                                             .Concat(GetCellBlockIndices(cell)).ToArray();
+        }
+
+        IEnumerable<int> GetCellRowIndices(Cell cell)    => Cells.Where(c => c.Position.Row == cell.Position.Row)
+                                                                 .Select(c => c.Index);
+        IEnumerable<int> GetCellColumnIndices(Cell cell) => Cells.Where(c => c.Position.Column == cell.Position.Column)
+                                                                 .Select(c => c.Index);
+        IEnumerable<int> GetCellBlockIndices(Cell cell)  => Cells.Where(c => c.Position.Block == cell.Position.Block)
+                                                                 .Select(c => c.Index);
+
         int GetNextEmptyCellIndex(int cellIndex) {
             if (cellIndex is >= CELL_COUNT or < 0) {
                 return -1;
@@ -254,16 +273,6 @@ namespace Sudoku {
             }
 
             return nextCellIndex;
-        }
-
-        public bool IsCellValid(Cell? cell, int value) {
-            if (cell == null) {
-                return false;
-            }
-
-            var cellData = (Cell)cell;
-            cellData.value = value;
-            return IsCellValid(cellData);
         }
 
         bool IsCellValid(int cellIndex, int value) {
