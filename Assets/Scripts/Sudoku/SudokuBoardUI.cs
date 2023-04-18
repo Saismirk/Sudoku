@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UI_Toolkit.Controllers;
 using UnityEngine;
@@ -56,63 +57,41 @@ namespace Sudoku {
         }
 
         void OnCellClicked(int cellIndex) {
+            var cells = SudokuManager.board.GetValidationCellIndices(cellIndex);
             HighlightValidationCells(cellIndex).Forget();
         }
 
         async UniTask HighlightValidationCells(int cellIndex) {
             var cell = SudokuManager.board.Cells[cellIndex];
-            foreach (var block in _blocks) {
-                block.HighlightBlock(false);
-                await UniTask.Yield();
-            }
-
             await UniTask.Yield();
-            _blocks[cell.Position.Block].HighlightBlock(true);
+            await SelectCells(cell);
             await UniTask.Yield();
-            HighlightBlockRows(cell).Forget();
-            HighlightBlockColumns(cell).Forget();
-            HighlightCell(cell).Forget();
+            await HighlightCells();
         }
 
-        async UniTask HighlightCell(Cell cell) {
-            _cells[cell.Index].UpdateCellState(SudokuCell.CellState.Selected);
+        async UniTask SelectCells(Cell cell) {
             var batch = 0;
-            for (var i = 0; i < SudokuBoard.CELL_COUNT; i++) {
-                if (cell.value == SudokuManager.board.Cells[i].value) {
-                    if (_cells[i].UpdateCellState(SudokuCell.CellState.Selected)) await UniTask.Yield();
+            for (var index = 0; index < _cells.Count; index++) {
+                if (cell.value == SudokuManager.board.Cells[index].value) {
+                    _cells[index].UpdateCellState(SudokuCell.CellState.Selected);
+                    await UniTask.Yield();
                     continue;
                 }
 
-                if (_cells[i].UpdateCellState(SudokuCell.CellState.None) && batch > 20) {
-                    batch = 0;
-                    await UniTask.Yield();
+                if (_cells[index].UpdateCellState(SudokuCell.CellState.None)) {
+                    if (batch++ % 3 == 0) await UniTask.Yield();
                 }
 
                 batch++;
             }
         }
 
-        async UniTask HighlightBlockRows(Cell cell) {
-            var blockRowIndexStart = cell.Position.Block - cell.Position.Block % SudokuBoard.SUB_BOARD_SIZE;
-            for (var i = blockRowIndexStart; i < blockRowIndexStart + SudokuBoard.SUB_BOARD_SIZE; i++) {
-                if (i == cell.Position.Block) {
-                    await UniTask.Yield();
-                    continue;
-                }
-
-                _blocks[i].HighlightRow(cell.Position.BlockRelativeRow);
-            }
-        }
-
-        async UniTask HighlightBlockColumns(Cell cell) {
-            var blockColumnIndexStart = cell.Position.Block % SudokuBoard.SUB_BOARD_SIZE;
-            for (var i = blockColumnIndexStart; i < SudokuBoard.SUB_BOARD_SIZE * SudokuBoard.SUB_BOARD_SIZE; i += SudokuBoard.SUB_BOARD_SIZE) {
-                if (i == cell.Position.Block) {
-                    await UniTask.Yield();
-                    continue;
-                }
-
-                _blocks[i].HighlightColumn(cell.Position.BlockRelativeColumn);
+        async UniTask HighlightCells() {
+            var batch = 0;
+            foreach (var highlightedCellIndex in SudokuManager.board.HighlightedCellIndices) {
+                _cells[highlightedCellIndex].UpdateCellState(SudokuCell.CellState.Highlighted);
+                if (batch++ % 3 == 0) await UniTask.Yield();
+                batch++;
             }
         }
     }

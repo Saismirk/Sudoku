@@ -16,7 +16,7 @@ namespace Sudoku {
 
     public class SudokuBoard {
         public       Cell[] Cells                  { get; private set; }
-        public       int[]  HighlightedCellIndices { get; private set; } = new int[BOARD_SIZE * 3 - 2];
+        public       int[]  HighlightedCellIndices { get; private set; } = new int[BOARD_SIZE * 3 - 3];
         public       int[]  Solution               { get; private set; }
         public const int    BOARD_SIZE          = 9;
         public const int    SUB_BOARD_SIZE      = 3;
