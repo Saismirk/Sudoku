@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UI_Toolkit.Controllers;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 namespace Sudoku {
     public class SudokuBoardUI : MonoBehaviour {
-        [SerializeField] UIDocument boardUI;
+        [SerializeField, Range(0, 80)] int        cellUpdateBatchSize = 3;
+        [SerializeField]               UIDocument boardUI;
 
         VisualElement       _boardContainer;
         List<SudokuBlockUI> _blocks = new();
@@ -79,7 +81,7 @@ namespace Sudoku {
                 }
 
                 if (_cells[index].UpdateCellState(SudokuCell.CellState.None)) {
-                    if (batch++ % 3 == 0) await UniTask.Yield();
+                    if (batch++ % cellUpdateBatchSize == 0) await UniTask.Yield();
                 }
 
                 batch++;
@@ -90,7 +92,7 @@ namespace Sudoku {
             var batch = 0;
             foreach (var highlightedCellIndex in SudokuManager.board.HighlightedCellIndices) {
                 _cells[highlightedCellIndex].UpdateCellState(SudokuCell.CellState.Highlighted);
-                if (batch++ % 3 == 0) await UniTask.Yield();
+                if (batch++ % cellUpdateBatchSize == 0) await UniTask.Yield();
                 batch++;
             }
         }

@@ -42,8 +42,6 @@
     -unity-text-align: middle-center;
     color: rgb(45, 50, 58);
     flex-shrink: 0;
-    transition-duration: 0.1s;
-    transition-timing-function: ease-out;
     background-color: rgb(143, 149, 166);
     align-self: stretch;
     justify-content: space-between;
