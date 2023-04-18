@@ -38,11 +38,11 @@
     height: 30%;
     -unity-font: url('project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&guid=cf25f8c70640075468c002657b936b30&type=3#AOTFShinGoProRegular');
     -unity-font-style: bold;
-    font-size: 420%;
+    font-size: 400%;
     -unity-text-align: middle-center;
-    color: rgb(45, 50, 58);
+    color: rgb(225, 225, 225);
     flex-shrink: 0;
-    background-color: rgb(143, 149, 166);
+    background-color: rgb(35, 35, 35);
     align-self: stretch;
     justify-content: space-between;
     align-items: center;
@@ -60,8 +60,7 @@
 }
 
 .sudoku_cell.highlighted {
-    background-color: rgb(55, 64, 77);
-    color: rgb(176, 176, 176);
+    color: rgb(188, 192, 64);
 }
 
 .sudoku_cell_top-right {
@@ -91,16 +90,21 @@
     border-bottom-left-radius: 50%;
     border-top-right-radius: 50%;
     border-bottom-right-radius: 50%;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
-    background-color: rgba(30, 28, 34, 0.77);
+    border-left-width: 5px;
+    border-right-width: 5px;
+    border-top-width: 5px;
+    border-bottom-width: 5px;
+    background-color: rgb(35, 35, 35);
     -unity-font-style: bold;
     -unity-font: url('project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&guid=cf25f8c70640075468c002657b936b30&type=3#AOTFShinGoProRegular');
     font-size: 60px;
-    color: rgb(255, 255, 255);
+    color: rgb(225, 225, 225);
     -unity-font-definition: initial;
+    border-left-color: rgba(255, 255, 255, 0.16);
+    border-right-color: rgba(255, 255, 255, 0.16);
+    border-top-color: rgba(255, 255, 255, 0.16);
+    border-bottom-color: rgba(255, 255, 255, 0.16);
+    transition-duration: 0.2s;
 }
 
 .sudoku_input:hover {
@@ -124,4 +128,31 @@
     width: 100%;
     height: 100%;
     padding-bottom: 10px;
+    color: rgb(225, 225, 225);
+}
+
+.sudoku_label {
+    -unity-font-definition: initial;
+    -unity-font: url('project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&guid=cf25f8c70640075468c002657b936b30&type=3#AOTFShinGoProRegular');
+    -unity-font-style: bold;
+    font-size: 45px;
+    color: rgb(220, 220, 220);
+    -unity-text-align: middle-center;
+}
+
+.sudoku_header_item {
+    flex-grow: 0;
+    background-color: rgba(0, 0, 0, 0);
+    height: 100%;
+    width: 70px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    -unity-background-scale-mode: scale-to-fit;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    flex-shrink: 0;
 }

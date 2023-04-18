@@ -1,12 +1,19 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="Block" src="project://database/Assets/UI%20Toolkit/Block.uxml?fileID=9197481963319205126&amp;guid=89369a90316c2be4590567bf66d2dfbe&amp;type=3#Block" />
     <Style src="project://database/Assets/UI%20Toolkit/USS/sudoku.uss?fileID=7433441132597879392&amp;guid=5a5e6d2cdc4d1c94db4735f04684c2d4&amp;type=3#sudoku" />
-    <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgb(45, 50, 58); align-items: center;">
-        <ui:VisualElement name="HeaderBase" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 100%; height: 86px; flex-shrink: 0; flex-direction: row;" />
-        <ui:VisualElement name="StatsBase" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 100%; height: 97px; flex-direction: row; flex-shrink: 0;">
+    <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgb(18, 18, 18); align-items: center;">
+        <ui:VisualElement name="HeaderBase" style="flex-grow: 0; width: 112%; height: 140px; flex-shrink: 0; flex-direction: row; margin-bottom: 30px;">
+            <ui:VisualElement name="DropShadow" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: resource(&apos;UI/drop_shadow&apos;); -unity-background-scale-mode: stretch-to-fill; -unity-slice-left: 70; -unity-slice-top: 0; -unity-slice-right: 70; -unity-slice-bottom: 70; width: 100%; -unity-slice-scale: 0.5px; position: absolute; height: 110%;" />
+            <ui:VisualElement style="flex-grow: 1; background-color: rgb(35, 35, 35); height: 90%; padding-left: 100px; padding-right: 100px; flex-direction: row;">
+                <ui:VisualElement name="Menu" class="sudoku_header_item" style="background-image: resource(&apos;UI/menu_FILL1_wght700_GRAD200_opsz48&apos;);" />
+                <ui:Label tabindex="-1" text="Sudoku" display-tooltip-when-elided="true" style="flex-grow: 1; color: rgb(255, 255, 255); -unity-text-align: middle-center; font-size: 80px; -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProDeBold.otf?fileID=12800000&amp;guid=3ec5a01754aa5d94bb0d7cffdc42d76c&amp;type=3#AOTFShinGoProDeBold&apos;); -unity-text-outline-width: 0; text-shadow: 3px 3px 2px rgba(0, 0, 0, 0.74); -unity-text-outline-color: rgba(0, 0, 0, 0);" />
+                <ui:VisualElement name="Settings" class="sudoku_header_item" style="background-image: resource(&apos;UI/settings_FILL1_wght700_GRAD200_opsz48&apos;);" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="StatsBase" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 100%; height: 97px; flex-direction: row; flex-shrink: 0; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0);">
             <ui:VisualElement name="Time" style="width: 20%;">
-                <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" name="TimeLabel" style="height: 50%; background-color: rgba(255, 255, 255, 0); color: rgb(255, 255, 255); -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&amp;guid=cf25f8c70640075468c002657b936b30&amp;type=3#AOTFShinGoProRegular&apos;); font-size: 45px; -unity-text-align: middle-center; -unity-font-style: bold;" />
-                <ui:Label tabindex="-1" text="00:00" display-tooltip-when-elided="true" name="TimeValue" style="height: 50%; background-color: rgba(255, 255, 255, 0); color: rgb(255, 255, 255); -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&amp;guid=cf25f8c70640075468c002657b936b30&amp;type=3#AOTFShinGoProRegular&apos;); font-size: 45px; -unity-text-align: middle-center; -unity-font-style: bold;" />
+                <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" name="TimeLabel" class="sudoku_label" style="height: 50%; background-color: rgba(255, 255, 255, 0);" />
+                <ui:Label tabindex="-1" text="00:00" display-tooltip-when-elided="true" name="TimeValue" class="sudoku_label" style="height: 50%; background-color: rgba(255, 255, 255, 0);" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="BoardBase" picking-mode="Ignore" style="flex-grow: 0; background-color: rgba(45, 50, 58, 0); width: 1100px; height: 1100px; position: relative; flex-shrink: 0; left: auto; right: auto; top: auto; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 30px; border-bottom-left-radius: 30px; border-top-right-radius: 30px; border-bottom-right-radius: 30px; align-items: flex-start; justify-content: center; align-self: center; flex-direction: row; flex-wrap: wrap; margin-top: 20px;">
@@ -31,10 +38,6 @@
                 <ui:Button text="1" display-tooltip-when-elided="true" name="1" class="sudoku_input" />
                 <ui:Button text="2" display-tooltip-when-elided="true" name="2" class="sudoku_input" />
                 <ui:Button text="3" display-tooltip-when-elided="true" name="3" class="sudoku_input" />
-            </ui:VisualElement>
-            <ui:VisualElement name="Mascot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); justify-content: flex-start; align-items: flex-start; align-self: flex-start; flex-direction: row;">
-                <ui:Button display-tooltip-when-elided="true" name="Button" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/unnamed.png?fileID=2800000&amp;guid=d1c0a007f48ffd643a8577729f64c469&amp;type=3#unnamed&apos;); height: 429px; width: 419px; background-color: rgba(188, 188, 188, 0);" />
-                <ui:TextField picking-mode="Ignore" value="Buru nyuu(hints goes here)" style="height: 170px; width: 445px; flex-direction: column-reverse; align-self: flex-start; font-size: 30px;" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
