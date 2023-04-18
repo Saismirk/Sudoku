@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 3ec5a01754aa5d94bb0d7cffdc42d76c
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - A-OTF Shin Go Pro
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 0b8dc8fb03d871a49b4c81dc405cc387, type: 3}
+  - {fileID: 12800000, guid: 68d359c52adde6d4eaca5effcf87ffce, type: 3}
+  - {fileID: 12800000, guid: 2275271713e6ec842ae468b73a6bde59, type: 3}
+  - {fileID: 12800000, guid: cf25f8c70640075468c002657b936b30, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

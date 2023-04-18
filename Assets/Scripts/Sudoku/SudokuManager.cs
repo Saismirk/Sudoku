@@ -1,7 +1,8 @@
 using UnityEngine;
 using System;
+#if UNITY_EDITOR
 using UnityEditor;
-using UnityEngine.Serialization;
+#endif
 
 namespace Sudoku {
     public class SudokuManager : MonoBehaviour {
@@ -46,6 +47,7 @@ namespace Sudoku {
         public static void UpdateBoard() => OnBoardGenerated?.Invoke(board);
     }
 
+    #if UNITY_EDITOR
     [CustomEditor(typeof(SudokuManager))]
     public class SudokuManagerEditor : Editor {
         public override void OnInspectorGUI() {
@@ -93,4 +95,5 @@ namespace Sudoku {
             serializedObject.ApplyModifiedProperties();
         }
     }
+    #endif
 }

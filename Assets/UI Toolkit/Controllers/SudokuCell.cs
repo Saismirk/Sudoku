@@ -43,6 +43,8 @@ namespace UI_Toolkit.Controllers {
             var label = new Label();
             Add(label);
             label.pickingMode = PickingMode.Ignore;
+            label.AddToClassList($"{BASE_CLASS}_label");
+
             RegisterCallback<ClickEvent>(OnClickEventListener);
         }
 

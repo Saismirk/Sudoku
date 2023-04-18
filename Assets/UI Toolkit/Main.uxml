@@ -1,8 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="Block" src="project://database/Assets/UI%20Toolkit/Block.uxml?fileID=9197481963319205126&amp;guid=89369a90316c2be4590567bf66d2dfbe&amp;type=3#Block" />
     <Style src="project://database/Assets/UI%20Toolkit/USS/sudoku.uss?fileID=7433441132597879392&amp;guid=5a5e6d2cdc4d1c94db4735f04684c2d4&amp;type=3#sudoku" />
-    <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgb(45, 50, 58);">
-        <ui:VisualElement name="BoardBase" picking-mode="Ignore" style="flex-grow: 0; background-color: rgba(45, 50, 58, 0); width: 1000px; height: 1000px; position: relative; flex-shrink: 0; left: auto; right: auto; top: auto; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 30px; border-bottom-left-radius: 30px; border-top-right-radius: 30px; border-bottom-right-radius: 30px; align-items: flex-start; justify-content: center; align-self: center; flex-direction: row; flex-wrap: wrap;">
+    <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgb(45, 50, 58); align-items: center;">
+        <ui:VisualElement name="HeaderBase" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 100%; height: 86px; flex-shrink: 0; flex-direction: row;" />
+        <ui:VisualElement name="StatsBase" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 100%; height: 97px; flex-direction: row; flex-shrink: 0;">
+            <ui:VisualElement name="Time" style="width: 20%;">
+                <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" name="TimeLabel" style="height: 50%; background-color: rgba(255, 255, 255, 0); color: rgb(255, 255, 255); -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&amp;guid=cf25f8c70640075468c002657b936b30&amp;type=3#AOTFShinGoProRegular&apos;); font-size: 45px; -unity-text-align: middle-center; -unity-font-style: bold;" />
+                <ui:Label tabindex="-1" text="00:00" display-tooltip-when-elided="true" name="TimeValue" style="height: 50%; background-color: rgba(255, 255, 255, 0); color: rgb(255, 255, 255); -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&amp;guid=cf25f8c70640075468c002657b936b30&amp;type=3#AOTFShinGoProRegular&apos;); font-size: 45px; -unity-text-align: middle-center; -unity-font-style: bold;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="BoardBase" picking-mode="Ignore" style="flex-grow: 0; background-color: rgba(45, 50, 58, 0); width: 1100px; height: 1100px; position: relative; flex-shrink: 0; left: auto; right: auto; top: auto; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 30px; border-bottom-left-radius: 30px; border-top-right-radius: 30px; border-bottom-right-radius: 30px; align-items: flex-start; justify-content: center; align-self: center; flex-direction: row; flex-wrap: wrap; margin-top: 20px;">
             <ui:Instance template="Block" name="Block_0" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
             <ui:Instance template="Block" name="Block_1" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
             <ui:Instance template="Block" name="Block_2" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
@@ -13,23 +20,22 @@
             <ui:Instance template="Block" name="Block_7" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
             <ui:Instance template="Block" name="Block_8" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
         </ui:VisualElement>
-        <ui:VisualElement name="Interactions" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: column; align-self: center; position: relative; height: -1061px; top: auto; width: -132px; justify-content: flex-start; align-items: flex-start; flex-wrap: nowrap; white-space: normal; -unity-text-align: upper-left;">
-            <ui:VisualElement name="Numbers" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; margin-left: 0; justify-content: center; align-self: flex-start; align-items: flex-start; font-size: 40px;">
-                <ui:Button text="1" display-tooltip-when-elided="true" name="1" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
-                <ui:Button text="2" display-tooltip-when-elided="true" name="2" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
-                <ui:Button text="3" display-tooltip-when-elided="true" name="3" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
-                <ui:Button text="4" display-tooltip-when-elided="true" name="4" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
-                <ui:Button text="5" display-tooltip-when-elided="true" name="5" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
-                <ui:Button text="6" display-tooltip-when-elided="true" name="6" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
-                <ui:Button text="7" display-tooltip-when-elided="true" name="7" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
-                <ui:Button text="8" display-tooltip-when-elided="true" name="8" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
-                <ui:Button text="9" display-tooltip-when-elided="true" name="9" style="-unity-text-align: middle-center; text-overflow: clip; white-space: nowrap; height: 91px; width: 95px; margin-top: 4px; margin-bottom: 4px; padding-top: 12px; padding-bottom: 12px;" />
+        <ui:VisualElement name="Interactions" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: column; align-self: center; position: relative; height: auto; top: auto; width: auto; justify-content: flex-start; align-items: center; flex-wrap: nowrap; white-space: normal; -unity-text-align: upper-left;">
+            <ui:VisualElement name="Numbers" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; margin-left: 63px; justify-content: center; align-self: center; align-items: center; font-size: 40px; flex-wrap: wrap; width: 486px; height: auto; margin-right: 63px; margin-top: 0; margin-bottom: 63px;">
+                <ui:Button text="7" display-tooltip-when-elided="true" name="7" class="sudoku_input" />
+                <ui:Button text="8" display-tooltip-when-elided="true" name="8" class="sudoku_input" />
+                <ui:Button text="9" display-tooltip-when-elided="true" name="9" class="sudoku_input" />
+                <ui:Button text="4" display-tooltip-when-elided="true" name="4" class="sudoku_input" />
+                <ui:Button text="5" display-tooltip-when-elided="true" name="5" class="sudoku_input" />
+                <ui:Button text="6" display-tooltip-when-elided="true" name="6" class="sudoku_input" />
+                <ui:Button text="1" display-tooltip-when-elided="true" name="1" class="sudoku_input" />
+                <ui:Button text="2" display-tooltip-when-elided="true" name="2" class="sudoku_input" />
+                <ui:Button text="3" display-tooltip-when-elided="true" name="3" class="sudoku_input" />
             </ui:VisualElement>
-            <ui:VisualElement name="Mascot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); justify-content: flex-start; align-items: flex-start; align-self: flex-start; flex-direction: row; position: relative; bottom: 52px;">
-                <ui:Button display-tooltip-when-elided="true" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/unnamed.png?fileID=2800000&amp;guid=d1c0a007f48ffd643a8577729f64c469&amp;type=3#unnamed&apos;); height: 429px; width: 419px; background-color: rgba(188, 188, 188, 0);" />
+            <ui:VisualElement name="Mascot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); justify-content: flex-start; align-items: flex-start; align-self: flex-start; flex-direction: row;">
+                <ui:Button display-tooltip-when-elided="true" name="Button" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/unnamed.png?fileID=2800000&amp;guid=d1c0a007f48ffd643a8577729f64c469&amp;type=3#unnamed&apos;); height: 429px; width: 419px; background-color: rgba(188, 188, 188, 0);" />
                 <ui:TextField picking-mode="Ignore" value="Buru nyuu(hints goes here)" style="height: 170px; width: 445px; flex-direction: column-reverse; align-self: flex-start; font-size: 30px;" />
             </ui:VisualElement>
-            <ui:Button text="Submit" display-tooltip-when-elided="true" name="Submit" style="-unity-text-align: middle-center; white-space: normal; padding-left: 100px; margin-left: 4px; margin-top: 2px; left: 550px; bottom: 317px; padding-right: 100px; padding-top: 50px; padding-bottom: 50px; text-overflow: clip; font-size: 28px; align-self: flex-start;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

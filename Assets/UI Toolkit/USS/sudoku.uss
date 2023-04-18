@@ -84,16 +84,16 @@
     border-right-color: rgb(255, 255, 255);
     border-top-color: rgb(255, 255, 255);
     border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 6px;
-    border-right-width: 6px;
-    border-top-width: 6px;
-    border-bottom-width: 6px;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
     width: auto;
     height: auto;
-    border-top-left-radius: 25px;
-    border-bottom-left-radius: 25px;
-    border-top-right-radius: 25px;
-    border-bottom-right-radius: 25px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
     flex-shrink: 1;
     margin-left: 0;
     margin-right: 0;
@@ -106,23 +106,33 @@
 }
 
 .sudoku_block {
-    margin-left: 11px;
-    margin-right: 11px;
-    margin-top: 11px;
-    margin-bottom: 11px;
+    margin-left: 9px;
+    margin-right: 9px;
+    margin-top: 9px;
+    margin-bottom: 9px;
 }
 
 .sudoku_cell {
-    width: 33.33333%;
-    height: 33.33333%;
-    -unity-font: url('project://database/Packages/com.unity.mobile.android-logcat/Editor/Fonts/consola.ttf?fileID=12800000&guid=b8af58820f69b474e8f63dc40a702fbc&type=3#consola');
-    -unity-font-style: bold-and-italic;
-    font-size: 481%;
+    width: 30%;
+    height: 30%;
+    -unity-font: url('project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&guid=cf25f8c70640075468c002657b936b30&type=3#AOTFShinGoProRegular');
+    -unity-font-style: bold;
+    font-size: 420%;
     -unity-text-align: middle-center;
-    color: rgb(255, 255, 255);
+    color: rgb(45, 50, 58);
     flex-shrink: 0;
     transition-duration: 0.1s;
     transition-timing-function: ease-out;
+    background-color: rgb(143, 149, 166);
+    align-self: stretch;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    -unity-font-definition: initial;
+    white-space: normal;
 }
 
 .sudoku_cell.selected {
@@ -134,21 +144,64 @@
 }
 
 .sudoku_cell_top-right {
-    border-top-right-radius: 7px;
+    border-top-right-radius: 30%;
 }
 
 .sudoku_cell_top-left {
-    border-top-left-radius: 7px;
+    border-top-left-radius: 30px;
 }
 
 .sudoku_cell_bottom-left {
-    border-bottom-left-radius: 7px;
+    border-bottom-left-radius: 30px;
 }
 
 .sudoku_cell_bottom-right {
-    border-bottom-right-radius: 7px;
+    border-bottom-right-radius: 30px;
 }
 
 .highlighted {
     background-color: rgb(55, 64, 77);
+}
+
+.sudoku_input {
+    width: 145px;
+    height: 145px;
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: rgba(30, 28, 34, 0.77);
+    -unity-font-style: bold;
+    -unity-font: url('project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&guid=cf25f8c70640075468c002657b936b30&type=3#AOTFShinGoProRegular');
+    font-size: 60px;
+    color: rgb(255, 255, 255);
+    -unity-font-definition: initial;
+}
+
+.sudoku_input:hover {
+    width: 145px;
+    height: 145px;
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: rgb(39, 34, 48);
+    -unity-font-style: bold;
+    -unity-font: url('project://database/Packages/com.unity.mobile.android-logcat/Editor/Fonts/consola.ttf?fileID=12800000&guid=b8af58820f69b474e8f63dc40a702fbc&type=3#consola');
+    font-size: 74px;
+    color: rgb(255, 255, 255);
+}
+
+.sudoku_cell_label {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 10px;
 }
