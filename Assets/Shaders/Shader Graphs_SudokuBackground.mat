@@ -54,8 +54,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _GradientPower: 4.02
+    - _NoiseScale: 15
+    - _NoiseSpeed: 0.05
+    - _Position: 0.383
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Wavelength: 0.88
     m_Colors:
-    - _MainColor: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
+    - _MainColor: {r: 0.09803922, g: 0.09803922, b: 0.09803922, a: 1}
   m_BuildTextureStacks: []

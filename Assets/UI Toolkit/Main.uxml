@@ -4,13 +4,13 @@
     <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(18, 18, 18, 0); align-items: center; background-image: none; -unity-background-scale-mode: scale-and-crop; -unity-slice-scale: 0.5px; -unity-background-image-tint-color: rgba(255, 255, 255, 0.3);">
         <ui:VisualElement name="HeaderBase" style="flex-grow: 0; width: 112%; height: 140px; flex-shrink: 0; flex-direction: row; margin-bottom: 30px;">
             <ui:VisualElement name="DropShadow" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: resource(&apos;UI/drop_shadow&apos;); -unity-background-scale-mode: stretch-to-fill; -unity-slice-left: 70; -unity-slice-top: 0; -unity-slice-right: 70; -unity-slice-bottom: 70; width: 100%; -unity-slice-scale: 0.5px; position: absolute; height: 110%;" />
-            <ui:VisualElement style="flex-grow: 1; background-color: rgb(35, 35, 35); height: 90%; padding-left: 100px; padding-right: 100px; flex-direction: row;">
+            <ui:VisualElement name="Header" style="flex-grow: 1; background-color: rgb(35, 35, 35); height: 90%; padding-left: 100px; padding-right: 100px; flex-direction: row;">
                 <ui:VisualElement name="Menu" class="sudoku_header_item" style="background-image: resource(&apos;UI/menu_FILL1_wght700_GRAD200_opsz48&apos;);" />
                 <ui:Label tabindex="-1" text="Sudoku" display-tooltip-when-elided="true" style="flex-grow: 1; color: rgb(255, 255, 255); -unity-text-align: middle-center; font-size: 80px; -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProDeBold.otf?fileID=12800000&amp;guid=3ec5a01754aa5d94bb0d7cffdc42d76c&amp;type=3#AOTFShinGoProDeBold&apos;); -unity-text-outline-width: 0; text-shadow: 3px 3px 2px rgba(0, 0, 0, 0.74); -unity-text-outline-color: rgba(0, 0, 0, 0);" />
                 <ui:VisualElement name="Settings" class="sudoku_header_item" style="background-image: resource(&apos;UI/settings_FILL1_wght700_GRAD200_opsz48&apos;);" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="StatsBase" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 100%; height: 97px; flex-direction: row; flex-shrink: 0; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0);">
+        <ui:VisualElement name="StatsBase" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 100%; height: 97px; flex-direction: row; flex-shrink: 0; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0); padding-left: 20px; padding-right: 20px;">
             <ui:VisualElement name="Time" style="width: 20%;">
                 <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" name="TimeLabel" class="sudoku_label" style="height: 50%; background-color: rgba(255, 255, 255, 0);" />
                 <ui:Label tabindex="-1" text="00:00" display-tooltip-when-elided="true" name="TimeValue" class="sudoku_label" style="height: 50%; background-color: rgba(255, 255, 255, 0);" />

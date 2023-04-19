@@ -409,7 +409,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: -180, z: 180}
 --- !u!1 &1577892097
 GameObject:
   m_ObjectHideFlags: 0
