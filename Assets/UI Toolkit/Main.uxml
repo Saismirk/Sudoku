@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="Block" src="project://database/Assets/UI%20Toolkit/Block.uxml?fileID=9197481963319205126&amp;guid=89369a90316c2be4590567bf66d2dfbe&amp;type=3#Block" />
     <Style src="project://database/Assets/UI%20Toolkit/USS/sudoku.uss?fileID=7433441132597879392&amp;guid=5a5e6d2cdc4d1c94db4735f04684c2d4&amp;type=3#sudoku" />
-    <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgb(18, 18, 18); align-items: center;">
+    <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(18, 18, 18, 0); align-items: center; background-image: none; -unity-background-scale-mode: scale-and-crop; -unity-slice-scale: 0.5px; -unity-background-image-tint-color: rgba(255, 255, 255, 0.3);">
         <ui:VisualElement name="HeaderBase" style="flex-grow: 0; width: 112%; height: 140px; flex-shrink: 0; flex-direction: row; margin-bottom: 30px;">
             <ui:VisualElement name="DropShadow" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: resource(&apos;UI/drop_shadow&apos;); -unity-background-scale-mode: stretch-to-fill; -unity-slice-left: 70; -unity-slice-top: 0; -unity-slice-right: 70; -unity-slice-bottom: 70; width: 100%; -unity-slice-scale: 0.5px; position: absolute; height: 110%;" />
             <ui:VisualElement style="flex-grow: 1; background-color: rgb(35, 35, 35); height: 90%; padding-left: 100px; padding-right: 100px; flex-direction: row;">

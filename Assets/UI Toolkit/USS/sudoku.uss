@@ -90,10 +90,10 @@
     border-bottom-left-radius: 50%;
     border-top-right-radius: 50%;
     border-bottom-right-radius: 50%;
-    border-left-width: 5px;
-    border-right-width: 5px;
-    border-top-width: 5px;
-    border-bottom-width: 5px;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
     background-color: rgb(35, 35, 35);
     -unity-font-style: bold;
     -unity-font: url('project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&guid=cf25f8c70640075468c002657b936b30&type=3#AOTFShinGoProRegular');
