@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/USS/sudoku.uss?fileID=7433441132597879392&amp;guid=5a5e6d2cdc4d1c94db4735f04684c2d4&amp;type=3#sudoku" />
     <ui:VisualElement name="Block" picking-mode="Ignore" class="sudoku_block_main" style="background-color: rgba(77, 83, 91, 0); width: 100%; height: 100%; flex-direction: row; flex-wrap: wrap; align-self: center; justify-content: center; align-items: stretch;">
+        <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); position: absolute; width: 420px; height: 420px; background-image: resource(&apos;UI/drop_shadow&apos;); -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; -unity-background-scale-mode: scale-and-crop; top: -53px; -unity-background-image-tint-color: rgba(255, 255, 255, 0.47);" />
         <UI_Toolkit.Controllers.SudokuCell name="0" Value="9" focusable="true" class="sudoku_cell sudoku_cell_top-left" style="-unity-text-align: middle-center;" />
         <UI_Toolkit.Controllers.SudokuCell Value="1" name="1" focusable="true" class="sudoku_cell" />
         <UI_Toolkit.Controllers.SudokuCell Value="5" name="2" focusable="true" class="sudoku_cell sudoku_cell_top-right" />

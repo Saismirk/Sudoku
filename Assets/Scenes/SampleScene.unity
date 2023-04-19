@@ -581,5 +581,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81b7f8865374fc9ac9331d021cd779b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellUpdateBatchSize: 6
+  cellUpdateBatchSize: 40
   boardUI: {fileID: 1949522070}

@@ -3,7 +3,7 @@
     <Style src="project://database/Assets/UI%20Toolkit/USS/sudoku.uss?fileID=7433441132597879392&amp;guid=5a5e6d2cdc4d1c94db4735f04684c2d4&amp;type=3#sudoku" />
     <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(18, 18, 18, 0); align-items: center; background-image: none; -unity-background-scale-mode: scale-and-crop; -unity-slice-scale: 0.5px; -unity-background-image-tint-color: rgba(255, 255, 255, 0.3);">
         <ui:VisualElement name="HeaderBase" style="flex-grow: 0; width: 112%; height: 140px; flex-shrink: 0; flex-direction: row; margin-bottom: 30px;">
-            <ui:VisualElement name="DropShadow" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: resource(&apos;UI/drop_shadow&apos;); -unity-background-scale-mode: stretch-to-fill; -unity-slice-left: 70; -unity-slice-top: 0; -unity-slice-right: 70; -unity-slice-bottom: 70; width: 100%; -unity-slice-scale: 0.5px; position: absolute; height: 110%;" />
+            <ui:VisualElement name="DropShadow" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: resource(&apos;UI/drop_shadow&apos;); -unity-background-scale-mode: stretch-to-fill; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; width: 100%; -unity-slice-scale: 0.5px; position: absolute; height: 120%;" />
             <ui:VisualElement name="Header" style="flex-grow: 1; background-color: rgb(35, 35, 35); height: 90%; padding-left: 100px; padding-right: 100px; flex-direction: row;">
                 <ui:VisualElement name="Menu" class="sudoku_header_item" style="background-image: resource(&apos;UI/menu_FILL1_wght700_GRAD200_opsz48&apos;);" />
                 <ui:Label tabindex="-1" text="Sudoku" display-tooltip-when-elided="true" style="flex-grow: 1; color: rgb(255, 255, 255); -unity-text-align: middle-center; font-size: 80px; -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProDeBold.otf?fileID=12800000&amp;guid=3ec5a01754aa5d94bb0d7cffdc42d76c&amp;type=3#AOTFShinGoProDeBold&apos;); -unity-text-outline-width: 0; text-shadow: 3px 3px 2px rgba(0, 0, 0, 0.74); -unity-text-outline-color: rgba(0, 0, 0, 0);" />
@@ -28,9 +28,9 @@
             <ui:Instance template="Block" name="Block_8" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />
         </ui:VisualElement>
         <ui:VisualElement name="Interactions" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: column; align-self: center; position: relative; height: auto; top: auto; width: auto; justify-content: flex-start; align-items: center; flex-wrap: nowrap; white-space: normal; -unity-text-align: upper-left;">
-            <ui:VisualElement name="Numbers" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; margin-left: 63px; justify-content: center; align-self: center; align-items: center; font-size: 40px; flex-wrap: wrap; width: 486px; height: auto; margin-right: 63px; margin-top: 0; margin-bottom: 63px;">
-                <ui:Button text="7" display-tooltip-when-elided="true" name="7" class="sudoku_input" />
-                <ui:Button text="8" display-tooltip-when-elided="true" name="8" class="sudoku_input" />
+            <ui:VisualElement name="Inputs" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; margin-left: 63px; justify-content: center; align-self: center; align-items: center; font-size: 40px; flex-wrap: wrap; width: 486px; height: auto; margin-right: 63px; margin-top: 0; margin-bottom: 63px;">
+                <ui:Button text="7" display-tooltip-when-elided="false" name="7" class="sudoku_input" />
+                <ui:Button text="8" display-tooltip-when-elided="false" name="8" class="sudoku_input" />
                 <ui:Button text="9" display-tooltip-when-elided="true" name="9" class="sudoku_input" />
                 <ui:Button text="4" display-tooltip-when-elided="true" name="4" class="sudoku_input" />
                 <ui:Button text="5" display-tooltip-when-elided="true" name="5" class="sudoku_input" />
