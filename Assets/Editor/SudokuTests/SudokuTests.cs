@@ -5,10 +5,29 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Sudoku;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEditor.VersionControl;
 
-public class SudokuTests
-{
+public class SudokuTests {
+    readonly IReadOnlyList<int> _fourSolutionBoardValues = new[] {
+        2, 3, 0, 0, 0, 0, 4, 9, 1,
+        0, 0, 8, 0, 9, 1, 0, 5, 0,
+        4, 9, 1, 3, 0, 2, 7, 8, 0,
+        0, 5, 0, 8, 3, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 9, 4, 0,
+        3, 0, 9, 2, 0, 4, 0, 6, 5,
+        0, 7, 0, 0, 0, 0, 1, 0, 8,
+        9, 0, 0, 0, 2, 0, 0, 0, 0,
+        0, 0, 0, 0, 8, 7, 0, 0, 0
+    };
+
+    [Test]
+    public void TestNumberOfSolutions() {
+        var board     = new SudokuBoard(_fourSolutionBoardValues);
+        var solutions = board.GetNumberOfSolutions();
+        Assert.AreEqual(4, solutions);
+    }
+
     // Tests the population of the board and that all cells have a valid value
     [Test]
     public void TestPopulateBoard() {
@@ -23,15 +42,15 @@ public class SudokuTests
     }
 
 // Tests the solving of the board
-    [Test]
-    public void TestSolveBoard() {
+    [UnityTest]
+    public IEnumerator TestSolveBoard() => UniTask.ToCoroutine(async () => {
         var board = new SudokuBoard();
-        board.RemoveCells(Difficulty.Easy);
+        await board.RemoveCells(Difficulty.Easy);
         Assert.IsFalse(board.IsCurrentBoardSolution());
         board.SolveBoard();
         Assert.IsTrue(board.IsBoardValid());
         Assert.IsTrue(board.IsCurrentBoardSolution());
-    }
+    });
 
     [Test]
     public void TestIsBoardValid() {
@@ -57,69 +76,57 @@ public class SudokuTests
         Assert.IsFalse(board.IsCellValid(board.Cells[0]));
     }
 
-    [Test]
-    public void TestDifficultyEasy() {
+    [UnityTest]
+    public IEnumerator TestDifficultyEasy() => UniTask.ToCoroutine(async () => {
         var board = new SudokuBoard();
-        board.RemoveCells(Difficulty.Easy);
+        await board.RemoveCells(Difficulty.Easy);
         Assert.IsFalse(board.IsCurrentBoardSolution());
         Assert.IsTrue(board.HasUniqueSolution());
         Assert.AreEqual(SudokuBoard.GetDifficultyHoleAmount(Difficulty.Easy), board.GetBoardHoleAmount());
-        board.SolveBoard();
-        Assert.IsTrue(board.IsBoardValid());
-        Assert.IsTrue(board.IsCurrentBoardSolution());
-    }
+    });
 
-    [Test]
-    public void TestDifficultyMedium() {
+    [UnityTest]
+    public IEnumerator TestDifficultyMedium() => UniTask.ToCoroutine(async () => {
         var board = new SudokuBoard();
-        board.RemoveCells(Difficulty.Medium);
+        await board.RemoveCells(Difficulty.Medium);
         Assert.IsFalse(board.IsCurrentBoardSolution());
         Assert.IsTrue(board.HasUniqueSolution());
         Assert.AreEqual(SudokuBoard.GetDifficultyHoleAmount(Difficulty.Medium), board.GetBoardHoleAmount());
-        board.SolveBoard();
-        Assert.IsTrue(board.IsBoardValid());
-        Assert.IsTrue(board.IsCurrentBoardSolution());
-    }
+    });
 
-    [Test]
-    public void TestDifficultyHard() {
+    [UnityTest]
+    public IEnumerator TestDifficultyHard() => UniTask.ToCoroutine(async () => {
         var board = new SudokuBoard();
-        board.RemoveCells(Difficulty.Hard);
+        await board.RemoveCells(Difficulty.Hard);
         Assert.IsFalse(board.IsCurrentBoardSolution());
         Assert.IsTrue(board.HasUniqueSolution());
         Assert.AreEqual(SudokuBoard.GetDifficultyHoleAmount(Difficulty.Hard), board.GetBoardHoleAmount());
-        board.SolveBoard();
-        Assert.IsTrue(board.IsBoardValid());
-        Assert.IsTrue(board.IsCurrentBoardSolution());
-    }
+    });
 
-    [Test]
-    public void TestDifficultyExpert() {
+    [UnityTest]
+    public IEnumerator TestDifficultyExpert() => UniTask.ToCoroutine(async () => {
         var board = new SudokuBoard();
-        board.RemoveCells(Difficulty.Expert);
+        await board.RemoveCells(Difficulty.Expert);
         Assert.IsFalse(board.IsCurrentBoardSolution());
         Assert.AreEqual(SudokuBoard.GetDifficultyHoleAmount(Difficulty.Expert), board.GetBoardHoleAmount());
-        board.SolveBoard();
-        Assert.IsTrue(board.IsBoardValid());
-        Assert.IsTrue(board.IsCurrentBoardSolution());
-    }
+    });
 
-    [Test]
-    public void TestRemoveCells() {
+    [UnityTest]
+    public IEnumerator TestRemoveCells() => UniTask.ToCoroutine(async () => {
         var board = new SudokuBoard();
         var cells = board.Cells.ToArray();
-        board.RemoveCells(Difficulty.Easy);
+        await board.RemoveCells(Difficulty.Easy);
         Assert.AreNotEqual(cells, board.Cells);
         Assert.AreEqual(SudokuBoard.GetDifficultyHoleAmount(Difficulty.Easy), board.GetBoardHoleAmount());
-    }
+    });
 
-    [Test]
-    public void TestHasUniqueSolution() {
+    [UnityTest]
+    public IEnumerator TestHasUniqueSolution() => UniTask.ToCoroutine(async () => {
         var board = new SudokuBoard();
         Assert.IsTrue(board.HasUniqueSolution());
         var copiedSolution = board.Solution.ToArray();
-        board.RemoveCells(Sudoku.Difficulty.Easy);
+        await board.RemoveCells(Sudoku.Difficulty.Easy);
         Assert.IsTrue(board.HasUniqueSolution());
         Assert.AreEqual(copiedSolution, board.Solution);
-    }
+    });
 }

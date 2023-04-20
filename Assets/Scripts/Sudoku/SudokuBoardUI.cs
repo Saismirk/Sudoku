@@ -13,12 +13,12 @@ namespace Sudoku {
         [SerializeField]               UIDocument boardUI;
 
         VisualElement       _boardContainer;
+        VisualElement       _inputContainer;
         List<SudokuBlockUI> _blocks = new();
         List<SudokuCell>    _cells  = new();
 
         void Start() {
-            _boardContainer = boardUI.rootVisualElement.Q<VisualElement>("BoardBase");
-            Debug.Assert(_boardContainer != null, "BoardBase not found");
+            InitializeVisualElements();
         }
 
         void OnEnable() {
@@ -32,14 +32,7 @@ namespace Sudoku {
         }
 
         void OnBoardGenerated(SudokuBoard board) {
-            if (boardUI == null) {
-                return;
-            }
-
             _blocks.Clear();
-
-            _boardContainer = boardUI.rootVisualElement.Q<VisualElement>("BoardBase");
-
             foreach (var i in Enumerable.Range(0, SudokuBoard.BOARD_SIZE)) {
                 var block = _boardContainer.Q<VisualElement>($"Block_{i}");
                 Debug.Assert(block != null, $"Block {i} not found");
@@ -50,6 +43,21 @@ namespace Sudoku {
             _cells.Sort((cell1, cell2) => cell1.CellIndex > cell2.CellIndex ? 1 : -1);
             _cells.ForEach(cell => cell.Init());
             UpdateBoard(board);
+        }
+
+        void InitializeVisualElements() {
+            if (boardUI == null) {
+                return;
+            }
+
+            _boardContainer = boardUI.rootVisualElement.Q<VisualElement>("BoardBase");
+            Debug.Assert(_boardContainer != null, "BoardBase not found");
+            _boardContainer = boardUI.rootVisualElement.Q<VisualElement>("BoardBase");
+            Debug.Assert(_boardContainer != null, "BoardBase not found");
+            _inputContainer = boardUI.rootVisualElement.Q<VisualElement>("Inputs");
+            Debug.Assert(_inputContainer != null, "Inputs not found");
+
+            InitializeInputButtons();
         }
 
         public void UpdateBoard(SudokuBoard board) {
@@ -74,7 +82,7 @@ namespace Sudoku {
         async UniTask SelectCells(Cell cell) {
             var batch = 0;
             for (var index = 0; index < _cells.Count; index++) {
-                if (cell.value == SudokuManager.board.Cells[index].value) {
+                if (cell.value != 0 && cell.value == SudokuManager.board.Cells[index].value) {
                     _cells[index].UpdateCellState(SudokuCell.CellState.Selected);
                     await UniTask.Yield();
                     continue;
@@ -86,6 +94,19 @@ namespace Sudoku {
 
                 batch++;
             }
+
+            _cells[cell.Index].UpdateCellState(SudokuCell.CellState.Selected);
+        }
+
+        void InitializeInputButtons() {
+            var buttons = _inputContainer.Query<Button>().ToList();
+            foreach (var button in buttons) {
+                button.clickable.clicked += OnInputButtonPressed;
+            }
+        }
+
+        void OnInputButtonPressed() {
+            Debug.Log("Button pressed");
         }
 
         async UniTask HighlightCells() {

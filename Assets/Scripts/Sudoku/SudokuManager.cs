@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using Cysharp.Threading.Tasks;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,25 +15,26 @@ namespace Sudoku {
         public static Cell CurrentSelectedCell { get; private set; }
 
         void Start() {
-            GenerateBoard();
+            GenerateBoard().Forget();
             Application.targetFrameRate = 120;
         }
 
-        public static void GenerateBoard() {
+        public static async UniTask GenerateBoard() {
             var processTime = Time.realtimeSinceStartup;
             board = new SudokuBoard();
+            await UniTask.Yield();
             processTime = Time.realtimeSinceStartup - processTime;
             Debug.Log($"Board generated in {processTime*1000} ms");
             UpdateBoard();
             Debug.Log(board);
         }
 
-        public void GeneratePlayableBoard() {
+        public async UniTask GeneratePlayableBoard() {
             if (board == null) {
-                GenerateBoard();
+                await GenerateBoard();
             }
-
-            board?.RemoveCells(difficulty);
+            await UniTask.Yield();
+            if (board != null) await board.RemoveCells(difficulty);
             UpdateBoard();
         }
 
@@ -72,7 +74,7 @@ namespace Sudoku {
             }
 
             if (GUILayout.Button("Generate Board")) {
-                SudokuManager.GenerateBoard();
+                SudokuManager.GenerateBoard().Forget();
             }
 
             if (GUILayout.Button("Solve Board")) {
@@ -80,7 +82,7 @@ namespace Sudoku {
             }
 
             if (GUILayout.Button("Generate Playable Board")) {
-                ((SudokuManager) target).GeneratePlayableBoard();
+                ((SudokuManager) target).GeneratePlayableBoard().Forget();
             }
 
             if (GUILayout.Button("Check Solutions")) {

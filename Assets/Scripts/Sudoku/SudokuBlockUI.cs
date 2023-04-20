@@ -25,8 +25,6 @@ namespace Sudoku {
             }
         }
 
-
-
         public void SetBlockNumber(int blockNumber) => BlockNumber = blockNumber;
     }
 }

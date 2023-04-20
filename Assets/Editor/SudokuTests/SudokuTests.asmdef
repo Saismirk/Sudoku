@@ -4,7 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Sudoku.Main"
+        "Sudoku.Main",
+        "UniTask"
     ],
     "includePlatforms": [
         "Editor"
