@@ -18,7 +18,8 @@ namespace Sudoku {
     public class SudokuBoard {
         public       Cell[] Cells                  { get; private set; }
         public       int[]  HighlightedCellIndices { get; private set; } = new int[BOARD_SIZE * 3 - 3];
-        public       int[]  Solution               { get; private set; }
+        public       int[]  Solution               { get; private set; } = new int[CELL_COUNT];
+        public       int[]  ValueCounts           { get; private set; } = new int[BOARD_SIZE];
         public const int    BOARD_SIZE          = 9;
         public const int    SUB_BOARD_SIZE      = 3;
         public const int    CELL_COUNT          = BOARD_SIZE * BOARD_SIZE;
@@ -31,7 +32,7 @@ namespace Sudoku {
         int    iterations    = 0;
         Cell[] randomCellIndices;
 
-        public SudokuBoard() {
+        public SudokuBoard(bool populateBoard = true) {
             Cells = new Cell[CELL_COUNT];
             for (var row = 0; row < BOARD_SIZE; row++) {
                 for (var column = 0; column < BOARD_SIZE; column++) {
@@ -39,6 +40,10 @@ namespace Sudoku {
                     var block = row / SUB_BOARD_SIZE * SUB_BOARD_SIZE + column / SUB_BOARD_SIZE;
                     Cells[index] = new Cell(0, new BoardPosition(row, column, block));
                 }
+            }
+
+            if (!populateBoard) {
+                return;
             }
 
             PopulateBoard();
@@ -77,23 +82,20 @@ namespace Sudoku {
         }
 
         int SolveCell(int cellIndex, ref int solutions, int maxSolutions = 10) {
-            var possibleNumbers = GetShuffledPossibleNumbers(cellIndex);
-
             if (cellIndex < 0) {
                 solutions++;
                 return solutions;
             }
 
             var nextCell = GetNextEmptyCellIndex(cellIndex);
-            foreach (var num in possibleNumbers) {
+            foreach (var num in GetShuffledPossibleNumbers(cellIndex)) {
                 SetCellValue(cellIndex, num);
                 if (SolveCell(nextCell, ref solutions) >= maxSolutions) {
                     return solutions;
                 }
-
-                SetCellValue(cellIndex, 0);
             }
 
+            SetCellValue(cellIndex, 0);
             return solutions;
         }
 
@@ -156,6 +158,12 @@ namespace Sudoku {
             }
         }
 
+        public bool TrySetCorrectCellValue(int cellIndex, int value) {
+            if (Solution[cellIndex] != value) return false;
+            SetCellValue(cellIndex, value);
+            return true;
+        }
+
         public int GetNumberOfSolutions() {
             var solutions = 0;
             var firstCell = GetNextEmptyCellIndex(0);
@@ -204,6 +212,7 @@ namespace Sudoku {
             }
 
             if (!HasUniqueSolution()) Debug.LogError("Board is still not solvable");
+            UpdateValueCounts();
         }
 
         bool RemoveCell() {
@@ -295,15 +304,6 @@ namespace Sudoku {
             return HighlightedCellIndices.AsSpan(0, index);
         }
 
-        IEnumerable<int> GetCellRowIndices(Cell cell) => Cells.Where(c => c.Position.Row == cell.Position.Row)
-                                                              .Select(c => c.Index);
-
-        IEnumerable<int> GetCellColumnIndices(Cell cell) => Cells.Where(c => c.Position.Column == cell.Position.Column)
-                                                                 .Select(c => c.Index);
-
-        IEnumerable<int> GetCellBlockIndices(Cell cell) => Cells.Where(c => c.Position.Block == cell.Position.Block)
-                                                                .Select(c => c.Index);
-
         int GetNextEmptyCellIndex(int cellIndex) {
             if (cellIndex is >= CELL_COUNT or < 0) {
                 return -1;
@@ -374,6 +374,19 @@ namespace Sudoku {
             return valid;
         }
 
+        public void UpdateValueCounts() {
+            ValueCounts = new int[BOARD_SIZE];
+            foreach (var cell in Cells) {
+                if (cell.value <= 0) continue;
+                ValueCounts[cell.value - 1]++;
+            }
+        }
+
+        public void UpdateValueCount(int value) {
+            if (value <= 0) return;
+            ValueCounts[value - 1]++;
+        }
+
         public static int GetDifficultyHoleAmount(Difficulty difficulty) => difficulty switch {
             Difficulty.Easy   => CELL_COUNT - MIN_HINT_AMOUNT - 15,
             Difficulty.Medium => CELL_COUNT - MIN_HINT_AMOUNT - 10,
@@ -385,6 +398,14 @@ namespace Sudoku {
         public int GetBoardHoleAmount() => Cells.Count(c => c.value == 0);
 
         public Cell GetCell(int row, int column) => Cells[row * BOARD_SIZE + column];
+
+        public int GetCellValue(int cellIndex) {
+            if (cellIndex is < 0 or >= CELL_COUNT) {
+                return -1;
+            }
+
+            return Cells[cellIndex].value;
+        }
 
         public List<Cell> GetBlockCells(int block) {
             if (block is < 0 or > BOARD_SIZE - 1) {

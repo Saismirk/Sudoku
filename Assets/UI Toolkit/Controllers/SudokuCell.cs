@@ -39,11 +39,13 @@ namespace UI_Toolkit.Controllers {
 
         public int CellIndex { get; private set; }
 
+        Label _label;
+
         public SudokuCell() {
-            var label = new Label();
-            Add(label);
-            label.pickingMode = PickingMode.Ignore;
-            label.AddToClassList($"{BASE_CLASS}_label");
+            _label = new Label();
+            Add(_label);
+            _label.pickingMode = PickingMode.Ignore;
+            _label.AddToClassList($"{BASE_CLASS}_label");
 
             RegisterCallback<ClickEvent>(OnClickEventListener);
         }
@@ -86,8 +88,7 @@ namespace UI_Toolkit.Controllers {
         }
 
         public void SetCellValue(string value) {
-            var label = this.Q<Label>();
-            label.text = value == "0" ? string.Empty : value;
+            _label.text = value == "0" ? string.Empty : value;
         }
 
         public void SetCellIndex(int index) {

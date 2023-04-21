@@ -109,6 +109,10 @@
     align-self: center;
     align-items: center;
     -unity-text-align: middle-center;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .sudoku_input:hover {
@@ -126,6 +130,11 @@
     -unity-font-style: bold;
     font-size: 74px;
     color: rgb(255, 255, 255);
+}
+
+.sudoku_input:disabled {
+    color: rgb(65, 65, 65);
+    opacity: 0.75;
 }
 
 .sudoku_cell_label {
