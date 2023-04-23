@@ -148,7 +148,8 @@ namespace Sudoku {
                                                                     await SudokuManager.GenerateBoard(true);
                                                                     await SudokuManager.GeneratePlayableBoard();
                                                                     SudokuManager.DismissNotification();
-                                                                })));
+                                                                }),
+                                                                onDismiss: SudokuManager.DismissNotification));
         }
 
         void OnInputButtonPressed(int value) {
