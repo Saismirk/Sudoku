@@ -25,6 +25,7 @@ namespace Sudoku {
         Label  _messageLabel;
         Button _acceptButton;
         Button _dismissButton;
+        VisualElement _basePanel;
 
         Action _onAccept;
         Action _onDismiss;
@@ -32,7 +33,6 @@ namespace Sudoku {
         void Awake() {
             _messageUI = GetComponent<UIDocument>();
             _messageUI.enabled = true;
-            Root.AddToClassList(REMOVED_CLASS);
         }
 
         void OnEnable() {
@@ -41,6 +41,8 @@ namespace Sudoku {
             _dismissButton = _messageUI.rootVisualElement.Q<Button>("DismissButton");
             _dismissButton.clicked += OnDismissButtonClicked;
             _titleLabel = Root.Q<Label>("TitleLabel");
+            _basePanel = Root.Q<VisualElement>("Background");
+            _basePanel.AddToClassList(REMOVED_CLASS);
             _messageLabel = Root.Q<Label>("MessageLabel");
             _acceptButton = Root.Q<Button>("AcceptButton");
             _dismissButton = Root.Q<Button>("DismissButton");
@@ -58,13 +60,13 @@ namespace Sudoku {
         }
 
         public void HideNotificationMessage() {
-            Root.AddToClassList(HIDDEN_CLASS);
-            Root.schedule.Execute(() => Root.AddToClassList(REMOVED_CLASS)).StartingIn(200);
+            _basePanel.AddToClassList(HIDDEN_CLASS);
+            _basePanel.schedule.Execute(() => _basePanel.AddToClassList(REMOVED_CLASS)).StartingIn(200);
         }
 
         public void ShowNotificationMessage() {
-            Root.RemoveFromClassList(REMOVED_CLASS);
-            Root.schedule.Execute(() => Root.RemoveFromClassList(HIDDEN_CLASS)).StartingIn(100);
+            _basePanel.RemoveFromClassList(REMOVED_CLASS);
+            _basePanel.schedule.Execute(() => _basePanel.RemoveFromClassList(HIDDEN_CLASS)).StartingIn(100);
         }
 
         void OnDisable() {
