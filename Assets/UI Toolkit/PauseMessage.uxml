@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/USS/sudoku.uss?fileID=7433441132597879392&amp;guid=5a5e6d2cdc4d1c94db4735f04684c2d4&amp;type=3#sudoku" />
+    <ui:VisualElement name="MessageBase" style="flex-grow: 1; background-color: rgb(0, 0, 0); justify-content: center; align-items: center; transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out;">
+        <ui:VisualElement name="MessagePanel" class="sudoku-message_panel">
+            <ui:Label tabindex="-1" text="PAUSED" display-tooltip-when-elided="true" class="sudoku_label" style="-unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&amp;guid=cf25f8c70640075468c002657b936b30&amp;type=3#AOTFShinGoProRegular&apos;); -unity-font-style: bold; font-size: 54px; text-shadow: 3px 3px 3px rgb(0, 0, 0);" />
+            <ui:Button display-tooltip-when-elided="true" name="ResumeButton" class="sudoku-button" style="height: 100px; width: 100px; border-top-left-radius: 50px; border-bottom-left-radius: 50px; border-top-right-radius: 50px; border-bottom-right-radius: 50px; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-left-width: 5px; border-right-width: 5px; border-top-width: 5px; border-bottom-width: 5px; padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px; margin-top: 19px; background-color: rgba(0, 0, 0, 0);">
+                <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: resource(&apos;UI/play_alt&apos;);" />
+            </ui:Button>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

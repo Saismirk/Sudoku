@@ -1,38 +1,48 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Extensions;
 using UI_Toolkit.Controllers;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 namespace Sudoku {
+    [RequireComponent(typeof(UIDocument))]
     public class SudokuBoardUI : MonoBehaviour {
-        [SerializeField, Range(0, 80)] int        cellUpdateBatchSize = 3;
-        [SerializeField]               UIDocument boardUI;
+        const string HIGHLIGHTED_CLASS                = "highlighted";
+        const string SELECTED_CLASS                   = "selected";
+        const string PAUSE_TIMER_CLASS                = "sudoku-pause--paused";
+        const string BUTTON_PRESSED_REACTION_CLASS    = "sudoku-button--pressed";
+        const int    BUTTON_PRESSED_REACTION_DURATION = 100;
 
-        readonly List<SudokuBlockUI>     _blocks  = new();
-        readonly Dictionary<int, Button> _buttons = new();
+        [SerializeField, Range(0, 80)] int cellUpdateBatchSize = 3;
+        UIDocument                         _boardUI;
+
+        readonly List<SudokuBlockUI>     _blocks       = new();
+        readonly Dictionary<int, Button> _inputButtons = new();
+        Button                           _pauseButton;
+        Button                           _restartButton;
         VisualElement                    _boardContainer;
         VisualElement                    _inputContainer;
         Label                            _timer;
         List<SudokuCell>                 _cells = new();
         int                              _selectedCellIndex;
 
-        void Start() {
-            InitializeVisualElements();
+        void Awake() {
+            _boardUI = GetComponent<UIDocument>();
         }
 
         void OnEnable() {
+            InitializeVisualElements();
             SudokuManager.OnBoardGenerated += OnBoardGenerated;
+            SudokuManager.OnGamePaused += OnGamePaused;
             SudokuManager.Timer.OnTimerUpdated += UpdateTimer;
             SudokuCell.OnCellClicked += OnCellClicked;
         }
 
         void OnDisable() {
             SudokuManager.OnBoardGenerated -= OnBoardGenerated;
+            SudokuManager.OnGamePaused -= OnGamePaused;
             SudokuManager.Timer.OnTimerUpdated -= UpdateTimer;
             SudokuCell.OnCellClicked -= OnCellClicked;
         }
@@ -40,7 +50,7 @@ namespace Sudoku {
         void OnBoardGenerated(SudokuBoard board) {
             _blocks.Clear();
             foreach (var i in Enumerable.Range(0, SudokuBoard.BOARD_SIZE)) {
-                var block = _boardContainer.Q<VisualElement>($"Block_{i}");
+                var block = _boardContainer?.Q<VisualElement>($"Block_{i}");
                 Debug.Assert(block != null, $"Block {i} not found");
                 _blocks.Add(new SudokuBlockUI(block, i, board.GetBlockCells(i)));
             }
@@ -50,6 +60,7 @@ namespace Sudoku {
             _cells.ForEach(cell => cell.Init());
             UpdateBoard(board);
             UpdateButtonAvailability();
+            _restartButton.SetEnabled(true);
         }
 
         void UpdateTimer(float time) {
@@ -58,20 +69,23 @@ namespace Sudoku {
         }
 
         void InitializeVisualElements() {
-            if (boardUI == null) {
+            if (_boardUI == null) {
+                Debug.LogError("Board UI is null");
                 return;
             }
 
-            _boardContainer = boardUI.rootVisualElement.Q<VisualElement>("BoardBase");
-            Debug.Assert(_boardContainer != null, "BoardBase not found");
-            _boardContainer = boardUI.rootVisualElement.Q<VisualElement>("BoardBase");
-            Debug.Assert(_boardContainer != null, "BoardBase not found");
-            _inputContainer = boardUI.rootVisualElement.Q<VisualElement>("Inputs");
-            Debug.Assert(_inputContainer != null, "Inputs not found");
-            _timer = boardUI.rootVisualElement.Q<Label>("TimeValue");
-            Debug.Assert(_timer != null, "TimeValue not found");
+            GetVisualElement(ref _boardContainer, _boardUI.rootVisualElement, "BoardBase");
+            GetVisualElement(ref _inputContainer, _boardUI.rootVisualElement, "Inputs");
+            GetVisualElement(ref _timer, _boardUI.rootVisualElement, "TimeValue");
+            GetVisualElement(ref _pauseButton, _boardUI.rootVisualElement, "PauseToggle");
+            GetVisualElement(ref _restartButton, _boardUI.rootVisualElement, "RestartButton");
 
             InitializeInputButtons();
+        }
+
+        void GetVisualElement<T>(ref T visualElement, VisualElement source, string elementName) where T : VisualElement {
+            visualElement = source?.Q<T>(elementName);
+            Debug.Assert(visualElement != null, $"{elementName} not found in {source?.name}");
         }
 
         public void UpdateBoard(SudokuBoard board) {
@@ -117,9 +131,24 @@ namespace Sudoku {
             var buttons = _inputContainer.Query<Button>().ToList();
             foreach (var button in buttons) {
                 var inputValue = int.Parse(button.name);
-                _buttons.Add(inputValue, button);
+                _inputButtons.Add(inputValue, button);
                 button.clickable.clicked += () => OnInputButtonPressed(inputValue);
             }
+
+            if (_pauseButton != null) _pauseButton.clickable.clicked += TogglePause;
+            if (_restartButton != null) _restartButton.clickable.clicked += OnRestartButtonPressed;
+        }
+
+        void OnRestartButtonPressed() {
+            SudokuManager.PushNotification(new NotificationData(title: "Restart Game",
+                                                                message: "Are you sure you want to restart the game?",
+                                                                type: NotificationType.Confirmation,
+                                                                onConfirm: UniTask.Action(async () => {
+                                                                    SudokuManager.TogglePauseTimer(false);
+                                                                    await SudokuManager.GenerateBoard(true);
+                                                                    await SudokuManager.GeneratePlayableBoard();
+                                                                    SudokuManager.DismissNotification();
+                                                                })));
         }
 
         void OnInputButtonPressed(int value) {
@@ -128,6 +157,7 @@ namespace Sudoku {
             if (SudokuManager.Board.TrySetCorrectCellValue(_selectedCellIndex, value)) {
                 Debug.Log($"Correct value was set ({value} on Cell {_selectedCellIndex})");
                 UpdateBoard(SudokuManager.Board);
+                _inputButtons[value].AddTemporaryClass(BUTTON_PRESSED_REACTION_CLASS, BUTTON_PRESSED_REACTION_DURATION);
                 SudokuManager.Board.UpdateValueCount(value);
                 UpdateButtonAvailability();
                 SelectCells(SudokuManager.Board.Cells[_selectedCellIndex], false).Forget();
@@ -137,8 +167,15 @@ namespace Sudoku {
             Debug.Log($"Incorrect value was set ({value} on Cell {_selectedCellIndex})");
         }
 
+        public void TogglePause() => SudokuManager.TogglePauseTimer();
+
+        void OnGamePaused(bool paused) {
+            _pauseButton?.Q<VisualElement>("PauseIcon")?.ToggleInClassList(PAUSE_TIMER_CLASS);
+            _pauseButton.AddTemporaryClass(BUTTON_PRESSED_REACTION_CLASS, BUTTON_PRESSED_REACTION_DURATION);
+        }
+
         void UpdateButtonAvailability() {
-            foreach (var button in _buttons) {
+            foreach (var button in _inputButtons) {
                 button.Value.SetEnabled(SudokuManager.Board.ValueCounts[button.Key - 1] < SudokuBoard.BOARD_SIZE);
             }
         }

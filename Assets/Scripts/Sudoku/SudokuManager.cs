@@ -9,14 +9,23 @@ using UnityEditor;
 
 namespace Sudoku {
     public class SudokuManager : MonoBehaviour {
-        [SerializeField] Difficulty             difficulty = Difficulty.Easy;
-        public static event Action<SudokuBoard> OnBoardGenerated;
+        [SerializeField] Difficulty                  difficulty = Difficulty.Easy;
+        public static event Action<SudokuBoard>      OnBoardGenerated;
+        public static event Action                   OnBoardPlayable;
+        public static event Action<NotificationData> OnNotificationMessage;
+        public static event Action                   OnNotificationDismissed;
+        public static event Action<Cell>             OnCellSelected;
+        public static event Action<bool>             OnGamePaused;
 
         public static CancellationToken CancellationToken   { get; private set; }
         public static SudokuTimer       Timer               { get; private set; } = new();
         public static SudokuBoard       Board               { get; private set; }
         public static Cell              CurrentSelectedCell { get; private set; }
         public static string            TimerText           { get; private set; }
+
+        public static Difficulty Difficulty { get; private set; }
+
+        public static bool IsPaused => Timer?.IsPaused == true;
 
         void Start() {
             CancellationToken = this.GetCancellationTokenOnDestroy();
@@ -35,16 +44,27 @@ namespace Sudoku {
             Debug.Log(Board);
         }
 
-        public async UniTask GeneratePlayableBoard() {
+        public static async UniTask GeneratePlayableBoard() {
             if (Board == null) {
                 await GenerateBoard(true);
             }
 
             Timer?.StopTimer();
             await UniTask.Yield(PlayerLoopTiming.Update);
-            if (Board != null) await Board.RemoveCells(difficulty);
+            if (Board != null) await Board.RemoveCells(Difficulty);
             Timer?.StartTimer(CancellationToken);
             UpdateBoard();
+            OnBoardPlayable?.Invoke();
+        }
+
+        public static void TogglePauseTimer(bool raiseEvent = true) {
+            if (Timer.IsPaused) {
+                Timer.ResumeTimer();
+                if (raiseEvent) OnGamePaused?.Invoke(false);
+            } else {
+                Timer.PauseTimer();
+                if (raiseEvent) OnGamePaused?.Invoke(true);
+            }
         }
 
         public static void SolveBoard() {
@@ -56,6 +76,14 @@ namespace Sudoku {
         }
 
         public static void UpdateBoard() => OnBoardGenerated?.Invoke(Board);
+
+        public static async UniTask RestartBoard() {
+            await GenerateBoard(true);
+            await GeneratePlayableBoard();
+        }
+
+        public static void PushNotification(NotificationData data) => OnNotificationMessage?.Invoke(data);
+        public static void DismissNotification() => OnNotificationDismissed?.Invoke();
     }
 
 #if UNITY_EDITOR
@@ -91,7 +119,7 @@ namespace Sudoku {
             }
 
             if (GUILayout.Button("Generate Playable Board")) {
-                ((SudokuManager)target).GeneratePlayableBoard().Forget();
+                SudokuManager.GeneratePlayableBoard().Forget();
             }
 
             if (GUILayout.Button("Check Solutions")) {
