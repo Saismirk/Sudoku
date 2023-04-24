@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Sudoku Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Sudoku
+  m_TableCollectionNameGuidString: e2764b70e281ce24fa1aa719d3f79c37
+  m_Entries:
+  - m_Id: 10302655844352
+    m_Key: Time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20329848393728
+    m_Key: Fails
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20414590111744
+    m_Key: Easy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20523147087872
+    m_Key: Medium
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20550951129088
+    m_Key: Hard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20582366466048
+    m_Key: Expert
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20626050142208
+    m_Key: not_reset_board_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20738440712192
+    m_Key: not_reset_board_msg
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 7687540646399181113
+  references:
+    version: 2
+    RefIds:
+    - rid: 7687540646399181113
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1682301361717

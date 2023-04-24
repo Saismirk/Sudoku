@@ -3,17 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using UnityEngine.Serialization;
+using Utilities;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 namespace Sudoku {
     public class SudokuManager : MonoBehaviour {
-        [SerializeField] Difficulty                  difficulty = Difficulty.Easy;
+        [SerializeField] Difficulty                  difficultySetting = Difficulty.Hard;
+        public static event Action                   OnBoardGenerationStarted;
+        public static event Action                   OnBoardGenerationFinished;
         public static event Action<SudokuBoard>      OnBoardGenerated;
         public static event Action                   OnBoardPlayable;
         public static event Action<NotificationData> OnNotificationMessage;
-        public static event Action                   OnNotificationDismissed;
+        public static event Action<bool>             OnNotificationDismissed;
         public static event Action<Cell>             OnCellSelected;
         public static event Action<bool>             OnGamePaused;
 
@@ -23,13 +27,14 @@ namespace Sudoku {
         public static Cell              CurrentSelectedCell { get; private set; }
         public static string            TimerText           { get; private set; }
 
-        public static Difficulty Difficulty { get; private set; }
+        public static Observable<Difficulty> DifficultySetting { get; private set; } = Difficulty.Hard;
 
         public static bool IsPaused => Timer?.IsPaused == true;
 
         void Start() {
             CancellationToken = this.GetCancellationTokenOnDestroy();
             GenerateBoard(false).Forget();
+            DifficultySetting.Value = difficultySetting;
             Application.targetFrameRate = 120;
         }
 
@@ -40,6 +45,7 @@ namespace Sudoku {
             Debug.Log($"Board generated in {processTime * 1000} ms");
             Timer?.StopTimer();
             await UniTask.Yield(PlayerLoopTiming.Update);
+            DifficultySetting.Update();
             UpdateBoard();
             Debug.Log(Board);
         }
@@ -51,7 +57,7 @@ namespace Sudoku {
 
             Timer?.StopTimer();
             await UniTask.Yield(PlayerLoopTiming.Update);
-            if (Board != null) await Board.RemoveCells(Difficulty);
+            if (Board != null) await Board.RemoveCells(DifficultySetting);
             Timer?.StartTimer(CancellationToken);
             UpdateBoard();
             OnBoardPlayable?.Invoke();
@@ -67,6 +73,18 @@ namespace Sudoku {
             }
         }
 
+        public static void SetPause(bool pause) {
+            if (pause) {
+                Timer.PauseTimer();
+                OnGamePaused?.Invoke(true);
+            } else {
+                Timer.ResumeTimer();
+                OnGamePaused?.Invoke(false);
+            }
+        }
+
+        public static void SetDifficulty(Difficulty difficulty) => DifficultySetting.Value = difficulty;
+
         public static void SolveBoard() {
             var processTime = Time.realtimeSinceStartup;
             Board.SolveBoard();
@@ -78,12 +96,22 @@ namespace Sudoku {
         public static void UpdateBoard() => OnBoardGenerated?.Invoke(Board);
 
         public static async UniTask RestartBoard() {
+            OnBoardGenerationStarted?.Invoke();
+            await UniTask.Delay(500);
             await GenerateBoard(true);
             await GeneratePlayableBoard();
+            await UniTask.Delay(200);
+            OnBoardGenerationFinished?.Invoke();
+        }
+
+        public static void StartNewGame(Difficulty difficulty) {
+            DifficultySetting.Value = difficulty;
+            RestartBoard().Forget();
+            OnBoardPlayable?.Invoke();
         }
 
         public static void PushNotification(NotificationData data) => OnNotificationMessage?.Invoke(data);
-        public static void DismissNotification() => OnNotificationDismissed?.Invoke();
+        public static void DismissNotification(bool instant = false)       => OnNotificationDismissed?.Invoke(instant);
     }
 
 #if UNITY_EDITOR
@@ -91,7 +119,7 @@ namespace Sudoku {
     public class SudokuManagerEditor : Editor {
         public override void OnInspectorGUI() {
             serializedObject.Update();
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("difficulty"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("difficultySetting"));
             if (SudokuManager.Board == null) return;
             for (var index = 0; index < SudokuManager.Board.Cells.Length; index++) {
                 var cell = SudokuManager.Board.Cells[index];

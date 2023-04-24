@@ -25,6 +25,7 @@ namespace Sudoku {
         VisualElement                    _boardContainer;
         VisualElement                    _inputContainer;
         Label                            _timer;
+        Label                            _difficultyLabel;
         List<SudokuCell>                 _cells = new();
         int                              _selectedCellIndex;
 
@@ -35,6 +36,7 @@ namespace Sudoku {
         void OnEnable() {
             InitializeVisualElements();
             SudokuManager.OnBoardGenerated += OnBoardGenerated;
+            SudokuManager.DifficultySetting.OnChanged += UpdateDifficultyLabel;
             SudokuManager.OnGamePaused += OnGamePaused;
             SudokuManager.Timer.OnTimerUpdated += UpdateTimer;
             SudokuCell.OnCellClicked += OnCellClicked;
@@ -79,6 +81,7 @@ namespace Sudoku {
             GetVisualElement(ref _timer, _boardUI.rootVisualElement, "TimeValue");
             GetVisualElement(ref _pauseButton, _boardUI.rootVisualElement, "PauseToggle");
             GetVisualElement(ref _restartButton, _boardUI.rootVisualElement, "RestartButton");
+            GetVisualElement(ref _difficultyLabel, _boardUI.rootVisualElement, "DifficultyLabel");
 
             InitializeInputButtons();
         }
@@ -140,16 +143,15 @@ namespace Sudoku {
         }
 
         void OnRestartButtonPressed() {
-            SudokuManager.PushNotification(new NotificationData(title: "Restart Game",
-                                                                message: "Are you sure you want to restart the game?",
+            SudokuManager.PushNotification(new NotificationData(title: UILocalizationManager.GetLocalizedText("not_reset_board_title"),
+                                                                message: UILocalizationManager.GetLocalizedText("not_reset_board_msg"),
                                                                 type: NotificationType.Confirmation,
                                                                 onConfirm: UniTask.Action(async () => {
-                                                                    SudokuManager.TogglePauseTimer(false);
-                                                                    await SudokuManager.GenerateBoard(true);
-                                                                    await SudokuManager.GeneratePlayableBoard();
-                                                                    SudokuManager.DismissNotification();
+                                                                    SudokuManager.RestartBoard().Forget();
+                                                                    await UniTask.Delay(500);
+                                                                    SudokuManager.DismissNotification(true);
                                                                 }),
-                                                                onDismiss: SudokuManager.DismissNotification));
+                                                                onDismiss: () => SudokuManager.DismissNotification()));
         }
 
         void OnInputButtonPressed(int value) {
@@ -179,6 +181,15 @@ namespace Sudoku {
             foreach (var button in _inputButtons) {
                 button.Value.SetEnabled(SudokuManager.Board.ValueCounts[button.Key - 1] < SudokuBoard.BOARD_SIZE);
             }
+        }
+
+        void UpdateDifficultyLabel(Difficulty difficulty) {
+            UpdateDifficultyLabelAsync(difficulty).Forget();
+        }
+
+        async UniTask UpdateDifficultyLabelAsync(Difficulty difficulty) {
+            if (_difficultyLabel == null) return;
+            _difficultyLabel.text = await UILocalizationManager.GetLocalizedTextAsync(difficulty.ToString());
         }
 
         async UniTask HighlightCells() {

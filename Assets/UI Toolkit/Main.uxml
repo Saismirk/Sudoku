@@ -4,20 +4,32 @@
     <ui:VisualElement name="Background" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(18, 18, 18, 0); align-items: center; background-image: none; -unity-background-scale-mode: scale-and-crop; -unity-slice-scale: 0.5px; -unity-background-image-tint-color: rgba(255, 255, 255, 0.3);">
         <ui:VisualElement name="HeaderBase" style="flex-grow: 0; width: 112%; height: 140px; flex-shrink: 0; flex-direction: row; margin-bottom: 30px;">
             <ui:VisualElement name="DropShadow" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: resource(&apos;UI/drop_shadow&apos;); -unity-background-scale-mode: stretch-to-fill; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; width: 100%; -unity-slice-scale: 0.5px; position: absolute; height: 120%;" />
-            <ui:VisualElement name="Header" style="flex-grow: 1; background-color: rgb(35, 35, 35); height: 90%; padding-left: 100px; padding-right: 100px; flex-direction: row;">
+            <ui:VisualElement name="Header" style="flex-grow: 1; background-color: rgb(45, 45, 45); height: 90%; padding-left: 10%; padding-right: 10%; flex-direction: row;">
                 <ui:VisualElement name="Menu" class="sudoku_header_item" style="background-image: resource(&apos;UI/menu_FILL1_wght700_GRAD200_opsz48&apos;);" />
                 <ui:Label tabindex="-1" text="Sudoku" display-tooltip-when-elided="true" style="flex-grow: 1; color: rgb(255, 255, 255); -unity-text-align: middle-center; font-size: 80px; -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProDeBold.otf?fileID=12800000&amp;guid=3ec5a01754aa5d94bb0d7cffdc42d76c&amp;type=3#AOTFShinGoProDeBold&apos;); -unity-text-outline-width: 0; text-shadow: 3px 3px 2px rgba(0, 0, 0, 0.74); -unity-text-outline-color: rgba(0, 0, 0, 0);" />
                 <ui:VisualElement name="Settings" class="sudoku_header_item" style="background-image: resource(&apos;UI/settings_FILL1_wght700_GRAD200_opsz48&apos;);" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="StatsBase" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 100%; height: 97px; flex-direction: row; flex-shrink: 0; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0); padding-left: 20px; padding-right: 20px;">
-            <ui:VisualElement name="Time" style="width: 20%;">
-                <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" name="TimeLabel" class="sudoku_label" style="height: 50%; background-color: rgba(255, 255, 255, 0);" />
-                <ui:Label tabindex="-1" text="00:00" display-tooltip-when-elided="true" name="TimeValue" class="sudoku_label" style="height: 50%; background-color: rgba(255, 255, 255, 0);" />
+        <ui:VisualElement name="StatsBase" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 100%; height: 97px; flex-direction: row; flex-shrink: 0; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0); padding-left: 10%; padding-right: 10%;">
+            <ui:VisualElement style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); flex-direction: row; width: 265px; flex-shrink: 0;">
+                <ui:VisualElement name="Time" style="width: 183px; flex-shrink: 0;">
+                    <SudokuUI.Controllers.LocalizedLabel tabindex="-1" text="Time" key="Time" display-tooltip-when-elided="true" name="TimeLabel" class="sudoku_label" style="height: 50%; background-color: rgba(255, 255, 255, 0);" />
+                    <ui:Label tabindex="-1" text="00:00" display-tooltip-when-elided="true" name="TimeValue" class="sudoku_label" style="height: 50%; background-color: rgba(255, 255, 255, 0);" />
+                </ui:VisualElement>
+                <ui:Button display-tooltip-when-elided="true" name="PauseToggle" class="sudoku-button" style="background-image: none; -unity-background-scale-mode: scale-to-fit; flex-grow: 0; width: 80px; border-left-color: rgb(210, 210, 210); border-right-color: rgb(210, 210, 210); border-top-color: rgb(210, 210, 210); border-bottom-color: rgb(210, 210, 210); -unity-background-image-tint-color: rgb(210, 210, 210); border-left-width: 4px; border-right-width: 4px; border-top-width: 4px; border-bottom-width: 4px; border-top-left-radius: 40px; border-bottom-left-radius: 40px; border-top-right-radius: 40px; border-bottom-right-radius: 40px; height: 80px; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; align-self: center; -unity-slice-scale: 0; background-color: rgba(0, 0, 0, 0); flex-shrink: 0;">
+                    <ui:VisualElement name="PauseIcon" class="sudoku-pause" />
+                </ui:Button>
             </ui:VisualElement>
-            <ui:Button display-tooltip-when-elided="true" name="PauseToggle" class="sudoku-button" style="background-image: none; -unity-background-scale-mode: scale-to-fit; flex-grow: 0; width: 80px; border-left-color: rgb(210, 210, 210); border-right-color: rgb(210, 210, 210); border-top-color: rgb(210, 210, 210); border-bottom-color: rgb(210, 210, 210); -unity-background-image-tint-color: rgb(210, 210, 210); border-left-width: 4px; border-right-width: 4px; border-top-width: 4px; border-bottom-width: 4px; border-top-left-radius: 40px; border-bottom-left-radius: 40px; border-top-right-radius: 40px; border-bottom-right-radius: 40px; height: 80px; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; align-self: center; -unity-slice-scale: 0; background-color: rgba(0, 0, 0, 0);">
-                <ui:VisualElement name="PauseIcon" class="sudoku-pause" />
-            </ui:Button>
+            <ui:VisualElement name="Difficulty" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); align-items: center; align-self: center; margin-left: 0; margin-right: 0; width: auto;">
+                <ui:Label tabindex="-1" text="Expert" display-tooltip-when-elided="true" name="DifficultyLabel" class="sudoku_label" style="font-size: 56px; white-space: nowrap;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Attempts" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 265px; flex-shrink: 0;">
+                <SudokuUI.Controllers.LocalizedLabel tabindex="-1" text="Fails" display-tooltip-when-elided="false" picking-mode="Ignore" key="Fails" class="sudoku_label" />
+                <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; align-items: center; justify-content: center;">
+                    <ui:Label tabindex="-1" text="0" display-tooltip-when-elided="true" name="AttemptCounter" class="sudoku_label" />
+                    <ui:Label tabindex="-1" text="/3" display-tooltip-when-elided="true" name="AttemptCounterMax" class="sudoku_label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="BoardBase" picking-mode="Ignore" style="flex-grow: 0; background-color: rgba(45, 50, 58, 0); width: 1100px; height: 1100px; position: relative; flex-shrink: 0; left: auto; right: auto; top: auto; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 30px; border-bottom-left-radius: 30px; border-top-right-radius: 30px; border-bottom-right-radius: 30px; align-items: flex-start; justify-content: center; align-self: center; flex-direction: row; flex-wrap: wrap; margin-top: 20px;">
             <ui:Instance template="Block" name="Block_0" picking-mode="Ignore" class="sudoku_block" style="width: 30%; height: 30%;" />

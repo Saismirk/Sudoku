@@ -12,41 +12,34 @@ namespace Sudoku {
         Error,
     }
 
-    [RequireComponent(typeof(UIDocument))]
-    public class NotificationMessageUI : MonoBehaviour {
-        const string HIDDEN_CLASS  = "sudoku--hidden";
-        const string REMOVED_CLASS = "sudoku--removed";
-
-        VisualElement Root => _messageUI?.rootVisualElement;
-
-        UIDocument _messageUI;
-
-        Label  _titleLabel;
-        Label  _messageLabel;
-        Button _acceptButton;
-        Button _dismissButton;
+    public class NotificationMessageUI : PanelUI {
+        Label         _titleLabel;
+        Label         _messageLabel;
+        Button        _acceptButton;
+        Button        _dismissButton;
         VisualElement _basePanel;
 
         Action _onAccept;
         Action _onDismiss;
 
-        void Awake() {
-            _messageUI = GetComponent<UIDocument>();
-            _messageUI.enabled = true;
-        }
-
-        void OnEnable() {
+        protected override void SetupVisualElements() {
+            base.SetupVisualElements();
             SudokuManager.OnNotificationMessage += OnNotificationMessage;
-            SudokuManager.OnNotificationDismissed += HideNotificationMessage;
-            _dismissButton = _messageUI.rootVisualElement.Q<Button>("DismissButton");
+            SudokuManager.OnNotificationDismissed += HideNotification;
+            _dismissButton = Root.Q<Button>("DismissButton");
             _dismissButton.clicked += OnDismissButtonClicked;
             _titleLabel = Root.Q<Label>("TitleLabel");
-            _basePanel = Root.Q<VisualElement>("Background");
-            _basePanel.AddToClassList(REMOVED_CLASS);
             _messageLabel = Root.Q<Label>("MessageLabel");
             _acceptButton = Root.Q<Button>("AcceptButton");
             _dismissButton = Root.Q<Button>("DismissButton");
             _acceptButton.clicked += OnAcceptButtonClicked;
+        }
+
+        protected override void DisableVisualElements() {
+            SudokuManager.OnNotificationMessage -= OnNotificationMessage;
+            SudokuManager.OnNotificationDismissed -= HideNotification;
+            _dismissButton.clicked -= OnDismissButtonClicked;
+            _acceptButton.clicked -= OnAcceptButtonClicked;
         }
 
         void OnAcceptButtonClicked() {
@@ -59,30 +52,23 @@ namespace Sudoku {
             _dismissButton.schedule.Execute(() => _onDismiss?.Invoke()).StartingIn(200);
         }
 
-        public void HideNotificationMessage() {
-            _basePanel.AddToClassList(HIDDEN_CLASS);
-            _basePanel.schedule.Execute(() => _basePanel.AddToClassList(REMOVED_CLASS)).StartingIn(200);
+        public void HideNotification(bool instant) {
+            SudokuManager.SetPause(false);
+            if (instant) {
+                HidePanelInstant();
+                return;
+            }
+            HidePanel();
         }
 
-        public void ShowNotificationMessage() {
-            _basePanel.RemoveFromClassList(REMOVED_CLASS);
-            _basePanel.schedule.Execute(() => _basePanel.RemoveFromClassList(HIDDEN_CLASS)).StartingIn(100);
-        }
-
-        void OnDisable() {
-            SudokuManager.OnNotificationMessage -= OnNotificationMessage;
-            SudokuManager.OnNotificationDismissed -= HideNotificationMessage;
-            _dismissButton.clicked -= OnDismissButtonClicked;
-            _acceptButton.clicked -= OnAcceptButtonClicked;
-        }
 
         void OnNotificationMessage(NotificationData message) {
+            SudokuManager.SetPause(true);
             _onAccept = message.onConfirm;
             _onDismiss = message.onDismiss;
             _titleLabel.text = message.title;
             _messageLabel.text = message.message;
-            ShowNotificationMessage();
+            ShowPanel();
         }
-
     }
 }
