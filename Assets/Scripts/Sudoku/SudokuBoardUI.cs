@@ -12,7 +12,9 @@ namespace Sudoku {
         const string HIGHLIGHTED_CLASS                = "highlighted";
         const string SELECTED_CLASS                   = "selected";
         const string PAUSE_TIMER_CLASS                = "sudoku-pause--paused";
-        const string BUTTON_PRESSED_REACTION_CLASS    = "sudoku-button--pressed";
+        const string BUTTON_PRESSED_SUCCESS_CLASS     = "sudoku-button--pressed";
+        const string BUTTON_PRESSED_FAIL_CLASS        = "sudoku-button--press_fail";
+        const string BUTTON_PRESSED_FAIL_LABEL_CLASS  = "sudoku-label--fail";
         const int    BUTTON_PRESSED_REACTION_DURATION = 100;
 
         [SerializeField, Range(0, 80)] int cellUpdateBatchSize = 3;
@@ -26,6 +28,7 @@ namespace Sudoku {
         VisualElement                    _inputContainer;
         Label                            _timer;
         Label                            _difficultyLabel;
+        Label                            _attemptsLabel;
         List<SudokuCell>                 _cells = new();
         int                              _selectedCellIndex;
 
@@ -37,6 +40,7 @@ namespace Sudoku {
             InitializeVisualElements();
             SudokuManager.OnBoardGenerated += OnBoardGenerated;
             SudokuManager.DifficultySetting.OnChanged += UpdateDifficultyLabel;
+            SudokuManager.Attempts.OnChanged += UpdateAttemptsLabel;
             SudokuManager.OnGamePaused += OnGamePaused;
             SudokuManager.Timer.OnTimerUpdated += UpdateTimer;
             SudokuCell.OnCellClicked += OnCellClicked;
@@ -45,6 +49,8 @@ namespace Sudoku {
         void OnDisable() {
             SudokuManager.OnBoardGenerated -= OnBoardGenerated;
             SudokuManager.OnGamePaused -= OnGamePaused;
+            SudokuManager.DifficultySetting.OnChanged -= UpdateDifficultyLabel;
+            SudokuManager.Attempts.OnChanged -= UpdateAttemptsLabel;
             SudokuManager.Timer.OnTimerUpdated -= UpdateTimer;
             SudokuCell.OnCellClicked -= OnCellClicked;
         }
@@ -82,6 +88,7 @@ namespace Sudoku {
             GetVisualElement(ref _pauseButton, _boardUI.rootVisualElement, "PauseToggle");
             GetVisualElement(ref _restartButton, _boardUI.rootVisualElement, "RestartButton");
             GetVisualElement(ref _difficultyLabel, _boardUI.rootVisualElement, "DifficultyLabel");
+            GetVisualElement(ref _attemptsLabel, _boardUI.rootVisualElement, "AttemptCounter");
 
             InitializeInputButtons();
         }
@@ -146,11 +153,7 @@ namespace Sudoku {
             SudokuManager.PushNotification(new NotificationData(title: UILocalizationManager.GetLocalizedText("not_reset_board_title"),
                                                                 message: UILocalizationManager.GetLocalizedText("not_reset_board_msg"),
                                                                 type: NotificationType.Confirmation,
-                                                                onConfirm: UniTask.Action(async () => {
-                                                                    SudokuManager.RestartBoard().Forget();
-                                                                    await UniTask.Delay(500);
-                                                                    SudokuManager.DismissNotification(true);
-                                                                }),
+                                                                onConfirm: () => SudokuManager.DismissAndRestartAsync().Forget(),
                                                                 onDismiss: () => SudokuManager.DismissNotification()));
         }
 
@@ -160,7 +163,7 @@ namespace Sudoku {
             if (SudokuManager.Board.TrySetCorrectCellValue(_selectedCellIndex, value)) {
                 Debug.Log($"Correct value was set ({value} on Cell {_selectedCellIndex})");
                 UpdateBoard(SudokuManager.Board);
-                _inputButtons[value].AddTemporaryClass(BUTTON_PRESSED_REACTION_CLASS, BUTTON_PRESSED_REACTION_DURATION);
+                _inputButtons[value].AddTemporaryClass(BUTTON_PRESSED_SUCCESS_CLASS, BUTTON_PRESSED_REACTION_DURATION);
                 SudokuManager.Board.UpdateValueCount(value);
                 UpdateButtonAvailability();
                 SelectCells(SudokuManager.Board.Cells[_selectedCellIndex], false).Forget();
@@ -168,13 +171,16 @@ namespace Sudoku {
             }
 
             Debug.Log($"Incorrect value was set ({value} on Cell {_selectedCellIndex})");
+            SudokuManager.Attempts.Value++;
+            _inputButtons[value].AddTemporaryClass(BUTTON_PRESSED_FAIL_CLASS, BUTTON_PRESSED_REACTION_DURATION);
+            _attemptsLabel.AddTemporaryClass(BUTTON_PRESSED_FAIL_LABEL_CLASS, BUTTON_PRESSED_REACTION_DURATION);
         }
 
         public void TogglePause() => SudokuManager.TogglePauseTimer();
 
         void OnGamePaused(bool paused) {
             _pauseButton?.Q<VisualElement>("PauseIcon")?.ToggleInClassList(PAUSE_TIMER_CLASS);
-            _pauseButton.AddTemporaryClass(BUTTON_PRESSED_REACTION_CLASS, BUTTON_PRESSED_REACTION_DURATION);
+            _pauseButton.AddTemporaryClass(BUTTON_PRESSED_SUCCESS_CLASS, BUTTON_PRESSED_REACTION_DURATION);
         }
 
         void UpdateButtonAvailability() {
@@ -185,6 +191,11 @@ namespace Sudoku {
 
         void UpdateDifficultyLabel(Difficulty difficulty) {
             UpdateDifficultyLabelAsync(difficulty).Forget();
+        }
+
+        void UpdateAttemptsLabel(int attempts) {
+            if (_attemptsLabel == null) return;
+            _attemptsLabel.text = attempts.ToString();
         }
 
         async UniTask UpdateDifficultyLabelAsync(Difficulty difficulty) {

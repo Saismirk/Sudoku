@@ -27,7 +27,7 @@
                 <SudokuUI.Controllers.LocalizedLabel tabindex="-1" text="Fails" display-tooltip-when-elided="false" picking-mode="Ignore" key="Fails" class="sudoku_label" />
                 <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; align-items: center; justify-content: center;">
                     <ui:Label tabindex="-1" text="0" display-tooltip-when-elided="true" name="AttemptCounter" class="sudoku_label" />
-                    <ui:Label tabindex="-1" text="/3" display-tooltip-when-elided="true" name="AttemptCounterMax" class="sudoku_label" />
+                    <ui:Label tabindex="-1" text="/5" display-tooltip-when-elided="true" name="AttemptCounterMax" class="sudoku_label" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
