@@ -50,6 +50,10 @@ MonoBehaviour:
     m_Localized: "El progreso actual se perder\xE1."
     m_Metadata:
       m_Items: []
+  - m_Id: 616982099808256
+    m_Localized: Seleccionar Dificultad
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

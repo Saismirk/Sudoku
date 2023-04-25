@@ -47,6 +47,10 @@ MonoBehaviour:
     m_Key: not_reset_board_msg
     m_Metadata:
       m_Items: []
+  - m_Id: 616982099808256
+    m_Key: difficulty_title
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

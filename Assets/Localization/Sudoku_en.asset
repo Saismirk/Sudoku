@@ -50,6 +50,10 @@ MonoBehaviour:
     m_Localized: Current board progress will be lost.
     m_Metadata:
       m_Items: []
+  - m_Id: 616982099808256
+    m_Localized: Select Difficulty
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

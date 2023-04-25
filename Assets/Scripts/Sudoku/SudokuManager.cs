@@ -81,7 +81,10 @@ namespace Sudoku {
 
             Timer?.StopTimer();
             await UniTask.Yield(PlayerLoopTiming.Update);
+            var time = Time.realtimeSinceStartup;
             if (Board != null) await Board.RemoveCells(DifficultySetting);
+            time = Time.realtimeSinceStartup - time;
+            Debug.Log($"Generated playable board in {time * 1000} ms ({DifficultySetting.Value})");
             Timer?.StartTimer(CancellationToken);
             UpdateBoard();
             OnBoardPlayable?.Invoke();

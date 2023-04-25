@@ -7,15 +7,18 @@ namespace Sudoku
         Button _easyButton;
         Button _mediumButton;
         Button _hardButton;
+        Button _expertButton;
 
         protected override void SetupVisualElements() {
             base.SetupVisualElements();
             _easyButton = Root.Q<Button>("EasyButton");
             _mediumButton = Root.Q<Button>("MediumButton");
             _hardButton = Root.Q<Button>("HardButton");
+            _expertButton = Root.Q<Button>("ExpertButton");
             _easyButton.clicked += OnEasyButtonClicked;
             _mediumButton.clicked += OnMediumButtonClicked;
             _hardButton.clicked += OnHardButtonClicked;
+            _expertButton.clicked += OnExpertButtonClicked;
             SudokuManager.OnBoardGenerationStarted += HidePanel;
         }
 
@@ -24,6 +27,7 @@ namespace Sudoku
             _easyButton.clicked -= OnEasyButtonClicked;
             _mediumButton.clicked -= OnMediumButtonClicked;
             _hardButton.clicked -= OnHardButtonClicked;
+            _expertButton.clicked -= OnExpertButtonClicked;
             SudokuManager.OnBoardGenerationStarted -= HidePanel;
         }
 
@@ -38,6 +42,10 @@ namespace Sudoku
 
         void OnHardButtonClicked() {
             _hardButton.schedule.Execute(() => SudokuManager.StartNewGame(Difficulty.Hard)).StartingIn(200);
+        }
+
+        void OnExpertButtonClicked() {
+            _expertButton.schedule.Execute(() => SudokuManager.StartNewGame(Difficulty.Expert)).StartingIn(200);
         }
     }
 }

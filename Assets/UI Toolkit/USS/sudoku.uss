@@ -152,7 +152,7 @@
     -unity-font-definition: initial;
     -unity-font: url('project://database/Assets/UI%20Toolkit/Font/AOTFShinGoProRegular.otf?fileID=12800000&guid=cf25f8c70640075468c002657b936b30&type=3#AOTFShinGoProRegular');
     -unity-font-style: bold;
-    font-size: 45px;
+    font-size: 40px;
     color: rgb(220, 220, 220);
     -unity-text-align: middle-center;
     white-space: nowrap;
