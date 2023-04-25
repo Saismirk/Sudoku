@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Serialization;
 using Utilities;
@@ -11,6 +12,7 @@ using UnityEditor;
 
 namespace Sudoku {
     public class SudokuManager : MonoBehaviour {
+        public const     int                         MAX_FAILS         = 5;
         [SerializeField] Difficulty                  difficultySetting = Difficulty.Hard;
         public static event Action                   OnBoardGenerationStarted;
         public static event Action                   OnBoardGenerationFinished;
@@ -28,6 +30,7 @@ namespace Sudoku {
         public static string            TimerText           { get; private set; }
 
         public static Observable<Difficulty> DifficultySetting { get; private set; } = Difficulty.Hard;
+        public static Observable<int>        Attempts          { get; private set; } = 0;
 
         public static bool IsPaused => Timer?.IsPaused == true;
 
@@ -36,6 +39,27 @@ namespace Sudoku {
             GenerateBoard(false).Forget();
             DifficultySetting.Value = difficultySetting;
             Application.targetFrameRate = 120;
+            Attempts.OnChanged += OnAttemptsChanged;
+        }
+
+        static void OnAttemptsChanged(int attempts) {
+            if (attempts < MAX_FAILS) return;
+            Debug.Log("Game Over");
+            PushNotification(new NotificationData {
+                title = "Game Over",
+                message = "You have failed too many times. Try again?",
+                onConfirm = () => DismissAndRestartAsync().Forget(),
+                onDismiss = () => {
+                    OnNotificationDismissed?.Invoke(false);
+                    Application.Quit();
+                }
+            });
+        }
+
+        public static async UniTask DismissAndRestartAsync() {
+            RestartBoard().Forget();
+            await UniTask.Delay(500);
+            DismissNotification(true);
         }
 
         public static async UniTask GenerateBoard(bool populateBoard) {
@@ -97,6 +121,7 @@ namespace Sudoku {
 
         public static async UniTask RestartBoard() {
             OnBoardGenerationStarted?.Invoke();
+            Attempts.Value = 0;
             await UniTask.Delay(500);
             await GenerateBoard(true);
             await GeneratePlayableBoard();
@@ -110,8 +135,8 @@ namespace Sudoku {
             OnBoardPlayable?.Invoke();
         }
 
-        public static void PushNotification(NotificationData data) => OnNotificationMessage?.Invoke(data);
-        public static void DismissNotification(bool instant = false)       => OnNotificationDismissed?.Invoke(instant);
+        public static void PushNotification(NotificationData data)   => OnNotificationMessage?.Invoke(data);
+        public static void DismissNotification(bool instant = false) => OnNotificationDismissed?.Invoke(instant);
     }
 
 #if UNITY_EDITOR
