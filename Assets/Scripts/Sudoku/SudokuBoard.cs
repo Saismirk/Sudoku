@@ -189,6 +189,22 @@ namespace Sudoku {
             return solutions == 1;
         }
 
+        public async UniTask<bool> HasUniqueSolutionAsync() {
+            var valueList = Cells.Select(cell => cell.value).ToList();
+            var solutions = 0;
+            var firstCell = GetNextEmptyCellIndex(0);
+            await UniTask.Yield();
+            if (firstCell >= 0) {
+                solutions = SolveCell(firstCell, ref solutions, 2);
+            } else {
+                Debug.Log("Board is already solved");
+                return true;
+            }
+            await UniTask.Yield();
+            SetCellValues(valueList);
+            return solutions == 1;
+        }
+
         static void Shuffle<T>(IList<T> array) {
             var rand = new Random();
             rand.InitState((uint)Time.frameCount);
@@ -207,17 +223,16 @@ namespace Sudoku {
             cellsBuffer = cellsToRemove;
             Debug.Log($"Removing {cellsToRemove} cells for difficulty {difficulty}");
             await UniTask.Yield();
-            if (!RemoveCell()) {
+            if (!await RemoveCell()) {
                 Debug.LogError("Failed to remove cells");
             }
 
-            if (!HasUniqueSolution()) Debug.LogError("Board is still not solvable");
             UpdateValueCounts();
         }
 
-        bool RemoveCell() {
+        async UniTask<bool> RemoveCell() {
             if (cellsToRemove <= 0) {
-                if (!HasUniqueSolution()) {
+                if (!await HasUniqueSolutionAsync()) {
                     Debug.LogError("Removed last cell but board is still not solvable");
                     return false;
                 }
@@ -241,13 +256,13 @@ namespace Sudoku {
                 iterations++;
                 SetCellValue(index, 0);
 
-                if (!HasUniqueSolution()) {
+                if (!await HasUniqueSolutionAsync()) {
                     SetCellValue(index, Solution[index]);
                     continue;
                 }
 
                 cellsToRemove--;
-                if (RemoveCell()) {
+                if (await RemoveCell()) {
                     return true;
                 }
 
