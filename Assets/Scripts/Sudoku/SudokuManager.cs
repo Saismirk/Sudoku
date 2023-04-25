@@ -56,7 +56,7 @@ namespace Sudoku {
             });
         }
 
-        public static async UniTask DismissAndRestartAsync() {
+        public static async UniTaskVoid DismissAndRestartAsync() {
             RestartBoard().Forget();
             await UniTask.Delay(500);
             DismissNotification(true);
@@ -122,7 +122,7 @@ namespace Sudoku {
 
         public static void UpdateBoard() => OnBoardGenerated?.Invoke(Board);
 
-        public static async UniTask RestartBoard() {
+        public static async UniTaskVoid RestartBoard() {
             OnBoardGenerationStarted?.Invoke();
             Attempts.Value = 0;
             await UniTask.Delay(500);

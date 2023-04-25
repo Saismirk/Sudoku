@@ -110,7 +110,7 @@ namespace Sudoku {
             HighlightValidationCells(cellIndex).Forget();
         }
 
-        async UniTask HighlightValidationCells(int cellIndex) {
+        async UniTaskVoid HighlightValidationCells(int cellIndex) {
             var cell = SudokuManager.Board.Cells[cellIndex];
             await UniTask.Yield();
             await SelectCells(cell);
