@@ -18,6 +18,7 @@ namespace Sudoku {
         public static event Action                   OnBoardGenerationFinished;
         public static event Action<SudokuBoard>      OnBoardGenerated;
         public static event Action                   OnBoardPlayable;
+        public static event Action                   OnGameStarted;
         public static event Action<NotificationData> OnNotificationMessage;
         public static event Action<bool>             OnNotificationDismissed;
         public static event Action<Cell>             OnCellSelected;
@@ -136,6 +137,10 @@ namespace Sudoku {
             DifficultySetting.Value = difficulty;
             RestartBoard().Forget();
             OnBoardPlayable?.Invoke();
+        }
+
+        public static void StartGame() {
+            OnGameStarted?.Invoke();
         }
 
         public static void PushNotification(NotificationData data)   => OnNotificationMessage?.Invoke(data);

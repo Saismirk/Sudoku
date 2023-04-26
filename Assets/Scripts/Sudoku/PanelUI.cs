@@ -55,7 +55,7 @@ namespace Sudoku {
         public virtual void ShowPanel() {
             _basePanel.RemoveFromClassList(REMOVED_CLASS);
             _hidePanelSchedule?.Pause();
-            _basePanel.RemoveFromClassList(HIDDEN_CLASS);
+            _basePanel.schedule.Execute(() => _basePanel.RemoveFromClassList(HIDDEN_CLASS)).StartingIn(33);
         }
     }
 }

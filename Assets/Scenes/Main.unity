@@ -475,7 +475,7 @@ GameObject:
   - component: {fileID: 645950947}
   - component: {fileID: 645950946}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Backdrop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -562,7 +562,7 @@ Transform:
   m_GameObject: {fileID: 645950945}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -580,7 +580,7 @@ GameObject:
   - component: {fileID: 1234301431}
   - component: {fileID: 1234301433}
   m_Layer: 5
-  m_Name: Difficulty
+  m_Name: Difficulty Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -630,7 +630,70 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelFadeTime: 500
+  startDisabled: 1
+--- !u!1 &1493542056
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1493542059}
+  - component: {fileID: 1493542058}
+  - component: {fileID: 1493542057}
+  m_Layer: 5
+  m_Name: MainMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1493542057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493542056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba5d053386bc4c4181c27d55190d3422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelFadeTime: 200
   startDisabled: 0
+--- !u!114 &1493542058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493542056}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 34696422d5b2777468e9e44df1414d31, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 11ef08511899b274ba813d0584ed0835, type: 3}
+  m_SortingOrder: 40
+--- !u!4 &1493542059
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493542056}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1577892097
 GameObject:
   m_ObjectHideFlags: 0
@@ -863,9 +926,8 @@ GameObject:
   - component: {fileID: 1949522071}
   - component: {fileID: 1949522070}
   - component: {fileID: 1949522072}
-  - component: {fileID: 1949522073}
   m_Layer: 5
-  m_Name: UIBoard
+  m_Name: Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -914,19 +976,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81b7f8865374fc9ac9331d021cd779b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panelFadeTime: 200
+  startDisabled: 1
   cellUpdateBatchSize: 40
---- !u!114 &1949522073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1949522069}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba945ebbcacb7a441bd48979b88b2df7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _table:
-    m_TableReference:
-      m_TableCollectionName: GUID:e2764b70e281ce24fa1aa719d3f79c37

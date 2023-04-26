@@ -8,9 +8,7 @@ using UnityEngine.UIElements;
 
 namespace Sudoku {
     [RequireComponent(typeof(UIDocument))]
-    public class SudokuBoardUI : MonoBehaviour {
-        const string HIGHLIGHTED_CLASS                = "highlighted";
-        const string SELECTED_CLASS                   = "selected";
+    public class SudokuBoardUI : PanelUI {
         const string PAUSE_TIMER_CLASS                = "sudoku-pause--paused";
         const string BUTTON_PRESSED_SUCCESS_CLASS     = "sudoku-button--pressed";
         const string BUTTON_PRESSED_FAIL_CLASS        = "sudoku-button--press_fail";
@@ -18,7 +16,6 @@ namespace Sudoku {
         const int    BUTTON_PRESSED_REACTION_DURATION = 100;
 
         [SerializeField, Range(0, 80)] int cellUpdateBatchSize = 3;
-        UIDocument                         _boardUI;
 
         readonly List<SudokuBlockUI>     _blocks       = new();
         readonly Dictionary<int, Button> _inputButtons = new();
@@ -32,12 +29,10 @@ namespace Sudoku {
         List<SudokuCell>                 _cells = new();
         int                              _selectedCellIndex;
 
-        void Awake() {
-            _boardUI = GetComponent<UIDocument>();
-        }
-
-        void OnEnable() {
+        protected override void SetupVisualElements() {
+            base.SetupVisualElements();
             InitializeVisualElements();
+            SudokuManager.OnBoardGenerationStarted += ShowPanel;
             SudokuManager.OnBoardGenerated += OnBoardGenerated;
             SudokuManager.DifficultySetting.OnChanged += UpdateDifficultyLabel;
             SudokuManager.Attempts.OnChanged += UpdateAttemptsLabel;
@@ -46,7 +41,8 @@ namespace Sudoku {
             SudokuCell.OnCellClicked += OnCellClicked;
         }
 
-        void OnDisable() {
+        protected override void DisableVisualElements() {
+            base.DisableVisualElements();
             SudokuManager.OnBoardGenerated -= OnBoardGenerated;
             SudokuManager.OnGamePaused -= OnGamePaused;
             SudokuManager.DifficultySetting.OnChanged -= UpdateDifficultyLabel;
@@ -77,18 +73,18 @@ namespace Sudoku {
         }
 
         void InitializeVisualElements() {
-            if (_boardUI == null) {
+            if (Root == null) {
                 Debug.LogError("Board UI is null");
                 return;
             }
 
-            GetVisualElement(ref _boardContainer, _boardUI.rootVisualElement, "BoardBase");
-            GetVisualElement(ref _inputContainer, _boardUI.rootVisualElement, "Inputs");
-            GetVisualElement(ref _timer, _boardUI.rootVisualElement, "TimeValue");
-            GetVisualElement(ref _pauseButton, _boardUI.rootVisualElement, "PauseToggle");
-            GetVisualElement(ref _restartButton, _boardUI.rootVisualElement, "RestartButton");
-            GetVisualElement(ref _difficultyLabel, _boardUI.rootVisualElement, "DifficultyLabel");
-            GetVisualElement(ref _attemptsLabel, _boardUI.rootVisualElement, "AttemptCounter");
+            GetVisualElement(ref _boardContainer, Root, "BoardBase");
+            GetVisualElement(ref _inputContainer, Root, "Inputs");
+            GetVisualElement(ref _timer, Root, "TimeValue");
+            GetVisualElement(ref _pauseButton, Root, "PauseToggle");
+            GetVisualElement(ref _restartButton, Root, "RestartButton");
+            GetVisualElement(ref _difficultyLabel, Root, "DifficultyLabel");
+            GetVisualElement(ref _attemptsLabel, Root, "AttemptCounter");
 
             InitializeInputButtons();
         }

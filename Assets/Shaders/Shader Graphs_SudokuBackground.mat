@@ -56,10 +56,11 @@ Material:
     m_Floats:
     - _GradientPower: 4.02
     - _NoiseScale: 15
-    - _NoiseSpeed: 0.05
+    - _NoiseSpeed: 0.01
     - _Position: 0.383
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _TextureScale: 0.15
     - _Wavelength: 0.88
     m_Colors:
     - _MainColor: {r: 0.11764706, g: 0.11764706, b: 0.11764706, a: 1}

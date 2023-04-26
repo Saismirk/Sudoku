@@ -20,6 +20,7 @@ namespace Sudoku
             _hardButton.clicked += OnHardButtonClicked;
             _expertButton.clicked += OnExpertButtonClicked;
             SudokuManager.OnBoardGenerationStarted += HidePanel;
+            SudokuManager.OnGameStarted += ShowPanel;
         }
 
         protected override void DisableVisualElements() {
@@ -29,22 +30,27 @@ namespace Sudoku
             _hardButton.clicked -= OnHardButtonClicked;
             _expertButton.clicked -= OnExpertButtonClicked;
             SudokuManager.OnBoardGenerationStarted -= HidePanel;
+            SudokuManager.OnGameStarted -= ShowPanel;
         }
 
         void OnEasyButtonClicked() {
+            _easyButton.AddTemporaryClass("sudoku-button--pressed", 100);
             _easyButton.schedule.Execute(() => SudokuManager.StartNewGame(Difficulty.Easy))
                        .StartingIn(200);
         }
 
         void OnMediumButtonClicked() {
+            _mediumButton.AddTemporaryClass("sudoku-button--pressed", 100);
             _mediumButton.schedule.Execute(() => SudokuManager.StartNewGame(Difficulty.Medium)).StartingIn(200);
         }
 
         void OnHardButtonClicked() {
+            _hardButton.AddTemporaryClass("sudoku-button--pressed", 100);
             _hardButton.schedule.Execute(() => SudokuManager.StartNewGame(Difficulty.Hard)).StartingIn(200);
         }
 
         void OnExpertButtonClicked() {
+            _expertButton.AddTemporaryClass("sudoku-button--pressed", 100);
             _expertButton.schedule.Execute(() => SudokuManager.StartNewGame(Difficulty.Expert)).StartingIn(200);
         }
     }

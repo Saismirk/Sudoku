@@ -1,0 +1,4 @@
+repository "Sudoku Infinite@Second_Morning_Works@cloud"
+  path "/"
+    br "/main"
+    co "/main"
